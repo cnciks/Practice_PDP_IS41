@@ -1,0 +1,68 @@
+# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+###############################
+# Core EditorConfig Options   #
+###############################
+# All files
+[*]
+indent_style = tab
+trim_trailing_whitespace = true
+
+vsspell_section_id = 1c1d98a3966d4bea882cc303496e4418
+vsspell_code_analyzer_ignore_verbatim_strings = true
+vsspell_additional_dictionary_folders_1c1d98a3966d4bea882cc303496e4418 = .\dictionaries
+vsspell_ignored_words_1c1d98a3966d4bea882cc303496e4418 = File:dictionaries\.ignored.dic
+vsspell_dictionary_languages_1c1d98a3966d4bea882cc303496e4418 = ru-RU,en-US
+
+# XML end etc...
+[*.{xml,xsd,appxmanifest,build,config,csproj,dbml,discomap,dtd,jsproj,lsproj,njsproj,nuspec,proj,props,StyleCop,targets,tasks,vbproj,wixproj}]
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+# XAML
+[*.{xaml,xamlx,xoml,axaml}]
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+# WIX
+[*.{wxs,wxi,wxl,thm}]
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+# JSON
+[*.{json}]
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+# Code files
+[*.{cs,csx,vb,vbx}]
+indent_style = tab
+indent_size = 4
+insert_final_newline = true
+charset = utf-8-bom
+end_of_line = crlf
+
+#### .NET Coding Conventions ####
+
+# Organize usings
+dotnet_separate_import_directive_groups = true
+dotnet_sort_system_directives_first = true
+
+# Space preferences
+csharp_space_after_keywords_in_control_flow_statements = false
+
+# Style
+csharp_style_var_for_built_in_types = true:silent
+csharp_style_namespace_declarations = file_scoped:silent
+
+[*/shared/external/*.cs]
+vsspell_spell_check_as_you_type = false
+vsspell_include_in_project_spell_check = false
+
+[*.resx]
+vsspell_spell_check_as_you_type = false
+vsspell_include_in_project_spell_check = false
+

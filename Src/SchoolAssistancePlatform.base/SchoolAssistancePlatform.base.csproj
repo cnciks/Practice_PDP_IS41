@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <LangVersion>14</LangVersion>
+
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <AssemblyName>SchoolAssistancePlatform.base</AssemblyName>
+    <RootNamespace>SchoolAssistancePlatform.Base</RootNamespace>
+
+    <NoWarn>$(NoWarn);1591</NoWarn>
+
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+</Project>
