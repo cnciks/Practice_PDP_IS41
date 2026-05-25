@@ -1,0 +1,32 @@
+<Application xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="SchoolAssistancePlatform.UI.App"
+             RequestedThemeVariant="Light">
+
+	<Application.Styles>
+		<FluentTheme />
+
+        <Style Selector="TextBlock">
+            <Setter Property="FontFamily" Value="Roboto" />
+		</Style>
+        <Style Selector="Button">
+		    <Setter Property="FontFamily" Value="Roboto" />
+		</Style>
+	</Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <!-- Светлая тема -->
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="BorderBrushColor" Color="Black"/>
+                </ResourceDictionary>
+                <!-- Тёмная тема -->
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="BorderBrushColor" Color="White"/>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>

@@ -1,3 +1,5 @@
 <Solution>
   <Project Path="SchoolAssistancePlatform.base/SchoolAssistancePlatform.base.csproj" />
+  <Project Path="SchoolAssistancePlatform.framework/SchoolAssistancePlatform.framework.csproj" Id="2e7d5104-f9e8-4dc2-b7f3-30ac98743a90" />
+  <Project Path="SchoolAssistancePlatform.ui/SchoolAssistancePlatform.ui.csproj" Id="296e7141-8986-4580-b810-91ee8877d0ad" />
 </Solution>
