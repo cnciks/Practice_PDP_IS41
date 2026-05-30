@@ -3,22 +3,33 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SchoolAssistancePlatform.Base.Entity.School;
 
+/// <summary>
+/// Представляет учебный план
+/// </summary>
 [Table("UchebniyPlan", Schema = "School")]
 public class UchebniyPlanEntity
 {
-	// Первичный ключ
+	/// <summary>
+	/// Первичный ключ
+	/// </summary>
 	[Key]
 	public long PlanID { get; set; }
 
-	// Название плана
+	/// <summary>
+	/// Название плана
+	/// </summary>
 	[Required(ErrorMessage = "Название обязательно"), StringLength(255)]
 	public string Nazvanie { get; set; }
 
-	// Год начала учебного плана
+	/// <summary>
+	/// Год начала учебного плана
+	/// </summary>
 	[Required(ErrorMessage = "Год обязателен")]
 	public int GodNachala { get; set; }
 
-	// Описание учебного плана
-	[Column(TypeName = "TEXT")] // Для больших объемов текста
+	/// <summary>
+	/// Описание учебного плана
+	/// </summary>
+	[Column(TypeName = "TEXT")]
 	public string Opisanie { get; set; }
 }

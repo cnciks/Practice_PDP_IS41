@@ -2,7 +2,141 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+
+             mc:Ignorable="d"
+
              x:Class="SchoolAssistancePlatform.UI.CommandsPageView">
-  CommandsPage
+
+    
+    <Grid RowDefinitions="Auto, *"
+          Margin="20">
+
+		<Grid ColumnDefinitions="*, Auto"
+			  Margin="0 0 0 20">
+
+			<Border BorderThickness="1"
+					BorderBrush="#CCCCCC"
+					Margin="0 0 20 0"
+					CornerRadius="3">
+                <Grid VerticalAlignment="Center"
+                      ColumnDefinitions="*, Auto">                    
+				    <StackPanel VerticalAlignment="Center"
+				    			Orientation="Horizontal"
+				    			Margin="20 0">
+				    	<ComboBox PlaceholderText="Тип"
+				    			  Width="180"
+				    			  Margin="0 0 20 0"/>
+				    	<ComboBox PlaceholderText="Дата"
+				    			  Width="180"
+				    			  Margin="0 0 20 0"/>
+				    	<ComboBox PlaceholderText="Статус"
+				    			  Width="180"/>
+				    </StackPanel>
+
+                    
+				    <ToggleButton x:Name="notification"
+				    			  Background="Transparent"
+                                  IsChecked="{Binding ApplyFilter}"
+				    			  Grid.Column="1">
+				    	<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/filter.png"
+				    		Width="32" Height="32"
+				    		Margin="10"/>
+				    </ToggleButton>
+
+                </Grid>
+			</Border>
+
+            <StackPanel Orientation="Horizontal"
+                        Grid.Column="1">
+                
+
+			    <Button HorizontalAlignment="Stretch"
+			    		HorizontalContentAlignment="Stretch"
+			    		Background="Transparent"
+			    		BorderThickness="1"
+			    		BorderBrush="#CCCCCC"
+			    		Command="{Binding EditCurriculumCommand}">
+			    
+			    	<Grid ColumnDefinitions="Auto, *"
+			    		  HorizontalAlignment="Stretch"
+			    		  Margin="10 0">
+			    
+			    		 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/edit.png"
+			    				Width="32" Height="32"
+			    				HorizontalAlignment="Center"
+			    				Margin="10"/>
+			    
+			    		<TextBlock Text="Создать"
+			    				   FontWeight="Bold"
+			    				   Grid.Column="1"
+			    				   VerticalAlignment="Center"/>
+			    	</Grid>
+			    
+			    </Button>
+                
+
+			    <Button HorizontalAlignment="Stretch"
+			    		HorizontalContentAlignment="Stretch"
+			    		Background="Transparent"
+			    		BorderThickness="1"
+			    		BorderBrush="#CCCCCC"
+			    		Command="{Binding EditCurriculumCommand}">
+			    
+			    	<Grid ColumnDefinitions="Auto, *"
+			    		  HorizontalAlignment="Stretch"
+			    		  Margin="10 0">
+			    
+			    		 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/pdf-file.png"
+			    				Width="32" Height="32"
+			    				HorizontalAlignment="Center"
+			    				Margin="10"/>
+			    
+			    		<TextBlock Text="Экспорт"
+			    				   FontWeight="Bold"
+			    				   Grid.Column="1"
+			    				   VerticalAlignment="Center"/>
+			    	</Grid>
+			    
+			    </Button>
+                
+            </StackPanel>
+
+		</Grid>
+
+        <Border Background="White" Padding="15"
+                Grid.Row="1">
+            <StackPanel Spacing="10">
+                
+                <TextBlock Text="Документы" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
+                
+                <Grid ColumnDefinitions="60,100,*,100,100" Background="#F0F0F0">
+                    <TextBlock Text="№" FontWeight="Bold" Grid.Column="0" Margin="10"/>
+                    <TextBlock Text="Дата" FontWeight="Bold" Grid.Column="1" Margin="10"/>
+                    <TextBlock Text="Название" FontWeight="Bold" Grid.Column="2" Margin="10"/>
+                    <TextBlock Text="Тип" FontWeight="Bold" Grid.Column="3" Margin="10"/>
+                    <TextBlock Text="Статус" FontWeight="Bold" Grid.Column="4" Margin="10"/>
+                </Grid>
+
+                <ItemsControl ItemsSource="{Binding Documents}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="10,8">
+                                <Grid ColumnDefinitions="60,100,*,100,100">
+                                    <TextBlock Grid.Column="0" Text="{Binding Number}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Date}"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Name}"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding Type}"/>
+                                    <TextBlock Grid.Column="4" Text="{Binding Status}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+            </StackPanel>
+        </Border>
+
+
+    </Grid>
+
 </UserControl>

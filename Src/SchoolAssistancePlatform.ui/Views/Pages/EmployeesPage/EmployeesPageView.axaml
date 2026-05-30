@@ -1,10 +1,171 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 
-             x:Class="SchoolAssistancePlatform.UI.EmployeesPageView">
-    EmployeesPageViewModel
+			 x:Class="SchoolAssistancePlatform.UI.EmployeesPageView">
+	<Grid RowDefinitions="Auto, *"
+		  Margin="20">
+
+		<Grid ColumnDefinitions="*, Auto"
+			  Margin="0 0 0 20">
+
+			<Border BorderThickness="1"
+					BorderBrush="#CCCCCC"
+					Margin="0 0 20 0"
+					CornerRadius="3">
+                <Grid VerticalAlignment="Center"
+                      ColumnDefinitions="*, Auto">                    
+				    <StackPanel VerticalAlignment="Center"
+				    			Orientation="Horizontal"
+				    			Margin="20 0">
+				    	<ComboBox PlaceholderText="Должность"
+				    			  Width="180"
+				    			  Margin="0 0 20 0"/>
+				    	<ComboBox PlaceholderText="Кабинет"
+				    			  Width="180"/>
+				    </StackPanel>
+
+                    
+				    <ToggleButton x:Name="notification"
+				    			  Background="Transparent"
+                                  IsChecked="{Binding ApplyFilter}"
+				    			  Grid.Column="1">
+				    	<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/filter.png"
+				    		Width="32" Height="32"
+				    		Margin="10"/>
+				    </ToggleButton>
+
+                </Grid>
+			</Border>
+
+			<Button HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					Background="Transparent"
+					BorderThickness="1"
+					BorderBrush="#CCCCCC"
+					Grid.Column="1"
+					Command="{Binding AddEmployeesCommand}">
+			
+				<Grid ColumnDefinitions="Auto, *"
+					  HorizontalAlignment="Stretch"
+					  Margin="10 0">
+			
+					 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/add-user.png"
+							Width="32" Height="32"
+							HorizontalAlignment="Center"
+							Margin="10"/>
+			
+					<TextBlock Text="Добавить"
+							   FontWeight="Bold"
+							   Grid.Column="1"
+							   VerticalAlignment="Center"/>
+				</Grid>
+			
+			</Button>
+		</Grid>
+
+        <ScrollViewer Margin="15"
+                      Grid.Row="1">
+
+            <Grid Grid.Row="1" RowDefinitions="Auto, *" Margin="0,10,0,0">
+    
+                <Border Grid.Row="0" 
+                        Background="#2C3E50" 
+                        CornerRadius="8,8,0,0" 
+                        Padding="12,10" 
+                        Margin="0,0,0,2">
+                    <Grid ColumnDefinitions="1.5*, 1.2*, 0.8*, 1.2*, 1*, 0.8*">
+                        <TextBlock Grid.Column="0" Text="👤 ФИО" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
+                        <TextBlock Grid.Column="1" Text="💼 Должность" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
+                        <TextBlock Grid.Column="2" Text="🚪 Кабинет" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
+                        <TextBlock Grid.Column="3" Text="🏫 Классное руководство" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
+                        <TextBlock Grid.Column="4" Text="📞 Телефон" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
+                        <TextBlock Grid.Column="5" Text="⚙️ Действия" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
+                    </Grid>
+                </Border>
+                
+                <ItemsControl Grid.Row="1" 
+                         ItemsSource="{Binding Employees}"
+                         BorderThickness="1"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible"
+                         BorderBrush="#E0E0E0"
+                         Background="#FAFAFA">
+                    
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="#E0E0E0" 
+                                    BorderThickness="0,0,0,1" 
+                                    Background="White"
+                                    Padding="12,10">
+                                <Grid ColumnDefinitions="1.5*, 1.2*, 0.8*, 1.2*, 1*, 0.8*">
+                                    
+                                    <TextBlock Grid.Column="0" 
+                                               Text="{Binding FullName}" 
+                                               HorizontalAlignment="Center"
+                                               FontWeight="SemiBold"
+                                               Foreground="#2C3E50"/>
+                                    
+                                    <Border Grid.Column="1" 
+                                            Background="#FFF3E0" 
+                                            CornerRadius="10" 
+                                            Padding="8,3"
+                                            HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding Position}" 
+                                                   Foreground="#E67E22"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="12"/>
+                                    </Border>
+                                    
+                                    <Border Grid.Column="2" 
+                                            Background="#E8F8F5" 
+                                            CornerRadius="10" 
+                                            Padding="8,3"
+                                            HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding RoomNumber}" 
+                                                   Foreground="#1ABC9C"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="12"/>
+                                    </Border>
+                                    
+                                    <Border Grid.Column="3" 
+                                            Background="#F4ECF7" 
+                                            CornerRadius="10" 
+                                            Padding="8,3"
+                                            HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding ClassLeadership}" 
+                                                   Foreground="#8E44AD"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="12"/>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Column="4" 
+                                               Text="{Binding Phone}" 
+                                               HorizontalAlignment="Center"
+                                               Foreground="#34495E"/>
+                                    
+                                    <Button Grid.Column="5" 
+                                            Content="✏️ Редактировать"
+                                            Command="{Binding EditCommand}"
+                                            HorizontalAlignment="Center"
+                                            Background="#3498DB"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Padding="12,5"
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Cursor="Hand"
+                                            CornerRadius="6"/>
+                                    
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+    
+            </Grid>
+        </ScrollViewer>
+	</Grid>
 </UserControl>

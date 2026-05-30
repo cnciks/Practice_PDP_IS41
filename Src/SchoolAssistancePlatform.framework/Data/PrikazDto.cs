@@ -16,5 +16,5 @@ public class PrikazDto
 
 	public long SotrudnikID { get; set; }
 
-	public SotrudnikDto Sotrudnik { get; set; }
+	public string SotrudnikFIO { get; set; }
 }

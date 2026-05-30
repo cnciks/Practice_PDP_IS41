@@ -2,7 +2,241 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
+
              x:Class="SchoolAssistancePlatform.UI.JournalPageView">
-JournalPageViewModel
+
+    <UserControl.Styles>
+        <Style Selector="Button">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </UserControl.Styles>
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="GradeExcellent" Color="#27AE60"/>
+        <SolidColorBrush x:Key="GradeGood" Color="#3498DB"/>
+        <SolidColorBrush x:Key="GradeSatisfactory" Color="#F39C12"/>
+        <SolidColorBrush x:Key="GradeBad" Color="#E74C3C"/>
+    </UserControl.Resources>
+
+    <Grid Margin="20"
+          RowDefinitions="Auto, *">
+
+		<Grid ColumnDefinitions="*, Auto"
+			  Margin="0 0 0 20">
+
+			<Border BorderThickness="1"
+					BorderBrush="#CCCCCC"
+					Margin="0 0 20 0"
+					CornerRadius="3">
+                <Grid VerticalAlignment="Center"
+                      ColumnDefinitions="*, Auto">                    
+				    <StackPanel VerticalAlignment="Center"
+				    			Orientation="Horizontal"
+				    			Margin="20 0">
+				    	<ComboBox PlaceholderText="Класс"
+				    			  Width="180"
+				    			  Margin="0 0 20 0"/>
+				    	<ComboBox PlaceholderText="Предмет"
+				    			  Width="180"
+				    			  Margin="0 0 20 0"/>
+				    	<ComboBox PlaceholderText="Период"
+				    			  Width="180"/>
+				    </StackPanel>
+
+                    
+				    <ToggleButton x:Name="notification"
+				    			  Background="Transparent"
+                                  IsChecked="{Binding ApplyFilter}"
+				    			  Grid.Column="1">
+				    	<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/filter.png"
+				    		Width="32" Height="32"
+				    		Margin="10"/>
+				    </ToggleButton>
+
+                </Grid>
+			</Border>
+
+			<Button HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					Background="Transparent"
+					BorderThickness="1"
+					BorderBrush="#CCCCCC"
+					Grid.Column="1"
+					Command="{Binding SaveJournalCommand}">
+			
+				<Grid ColumnDefinitions="Auto, *"
+					  HorizontalAlignment="Stretch"
+					  Margin="10 0">
+			
+					 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/disk.png"
+							Width="32" Height="32"
+							HorizontalAlignment="Center"
+							Margin="10"/>
+			
+					<TextBlock Text="Сохранить"
+							   FontWeight="Bold"
+							   Grid.Column="1"
+							   VerticalAlignment="Center"/>
+				</Grid>
+			
+			</Button>
+		</Grid>
+
+    <Border Grid.Row="1">
+        <DockPanel>
+    <ScrollViewer>
+        <Border Background="White"
+                CornerRadius="8"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1">
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок -->
+                <Border Grid.Row="0"
+                        Background="#F8F9FA"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="0,0,0,1">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="0"
+                                       Text="👤 Ученик"
+                                       FontWeight="Bold"
+                                       Padding="12,10"
+                                       Foreground="#555"/>
+                            
+                            <!-- Динамические даты -->
+                            <ItemsControl Grid.Column="1"
+                                          ItemsSource="{Binding Dates}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#E0E0E0" BorderThickness="1,0,0,0">
+                                            <TextBlock Text="{Binding Day}"
+                                                       FontWeight="Bold"
+                                                       Padding="25,10"
+                                                       Foreground="#555"
+                                                       HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <TextBlock Grid.Column="2"
+                                       Text="📊 Средний балл"
+                                       FontWeight="Bold"
+                                       Padding="12,10"
+                                       Foreground="#555"
+                                       HorizontalAlignment="Center"/>
+                        </Grid>
+                    </ScrollViewer>
+                </Border>
+                
+                <!-- Список учеников -->
+                <ScrollViewer Grid.Row="1"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                    
+                    <ItemsControl ItemsSource="{Binding Students}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#E0E0E0"
+                                        BorderThickness="0,0,0,1">
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.Column="0" Padding="8,8">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock Text="👨‍🎓" FontSize="14"/>
+                                                
+                                                <TextBlock Text="{Binding StudentName}"
+                                                         Width="120"
+                                                         Padding="4"/>
+                                            </StackPanel>
+                                        </Border>
+                                        
+                                        <ItemsControl Grid.Column="1"
+                                                      ItemsSource="{Binding Grades}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="#E0E0E0"
+                                                            BorderThickness="1,0,0,0"
+                                                            Width="70"
+                                                            Padding="8,4">
+                                                        <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                 TextAlignment="Center"
+                                                                 Width="50"
+                                                                 MaxLength="1"
+                                                                 Background="#F8F9FA"
+                                                                 BorderThickness="1"
+                                                                 BorderBrush="#DDD"
+                                                                 CornerRadius="4">
+                                                            <TextBox.Styles>
+                                                                <Style Selector="TextBox">
+                                                                    <Setter Property="Background" Value="#F8F9FA"/>
+                                                                </Style>
+                                                            </TextBox.Styles>
+                                                        </TextBox>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <Border Grid.Column="2"
+                                                Background="#3498DB"
+                                                CornerRadius="6"
+                                                Margin="5"
+                                                Padding="8,4">
+                                            <TextBlock Text="{Binding AverageGrade, StringFormat={}{0:F1}}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       FontWeight="Bold"
+                                                       FontSize="14"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </ScrollViewer>
+</DockPanel>
+    </Border>
+
+    </Grid>
+
+
 </UserControl>

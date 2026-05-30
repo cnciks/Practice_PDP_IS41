@@ -19,7 +19,7 @@
             <ResourceDictionary.ThemeDictionaries>
                 <!-- Светлая тема -->
                 <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="BorderBrushColor" Color="Black"/>
+                    <SolidColorBrush x:Key="BorderBrushColor" Color="#CCCCCC"/>
                 </ResourceDictionary>
                 <!-- Тёмная тема -->
                 <ResourceDictionary x:Key="Dark">

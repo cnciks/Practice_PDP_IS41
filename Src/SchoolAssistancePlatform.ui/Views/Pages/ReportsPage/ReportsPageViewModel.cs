@@ -1,4 +1,6 @@
-﻿using ReactiveUI;
+﻿using System.Threading.Tasks;
+
+using ReactiveUI;
 
 using SchoolAssistancePlatform.framework;
 using SchoolAssistancePlatform.UI.Interfaces;
@@ -10,4 +12,10 @@ internal class ReportsPageViewModel : ReactiveObject, IWorkSpacePage
 	public string Title => "Отчёты";
 
 	public Permissions Permission => Permissions.ReportsPage;
+
+	public Task LoadPageAsync()
+	{
+
+		return Task.CompletedTask;
+	}
 }

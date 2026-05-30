@@ -3,50 +3,75 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SchoolAssistancePlatform.Base.Entity.School;
 
+/// <summary>
+/// Представляет ученика учебного заведения
+/// </summary>
 [Table("Uchenik", Schema = "School")]
 public class UchenikEntity
 {
-	// Первичный ключ
+	/// <summary>
+	/// Первичный ключ
+	/// </summary>
 	[Key]
 	public long UchenikID { get; set; }
 
-	// Фамилия
+	/// <summary>
+	/// Фамилия
+	/// </summary>
 	[Required(ErrorMessage = "Фамилия обязательна"), StringLength(100)]
 	public string Familiia { get; set; }
 
-	// Имя
+	/// <summary>
+	/// Имя
+	/// </summary>
 	[Required(ErrorMessage = "Имя обязательно"), StringLength(100)]
 	public string Imya { get; set; }
 
-	// Отчество
+	/// <summary>
+	/// Отчество
+	/// </summary>
 	[StringLength(100)]
 	public string Otchestvo { get; set; }
 
-	// Дата рождения
+	/// <summary>
+	/// Дата рождения
+	/// </summary>
 	[Required(ErrorMessage = "Дата рождения обязательна")]
 	public DateTime DataRozhdeniya { get; set; }
 
-	// Адрес проживания
+	/// <summary>
+	/// Адрес проживания
+	/// </summary>
 	[Required(ErrorMessage = "Адрес проживания обязателен"), StringLength(255)]
 	public string AdresProzhivaniya { get; set; }
 
-	// ФИО родителей
+	/// <summary>
+	/// ФИО родителей
+	/// </summary>
 	[Required(ErrorMessage = "ФИО родителей обязательно"), StringLength(255)]
 	public string FIORoditeley { get; set; }
 
-	// Телефон родителя
+	/// <summary>
+	/// Телефон родителя
+	/// </summary>
 	[StringLength(20)]
 	public string TelefonRoditelya { get; set; }
 
-	// Дата зачисления
+	/// <summary>
+	/// Дата зачисления
+	/// </summary>
 	[Required(ErrorMessage = "Дата зачисления обязательна")]
 	public DateTime DataZachisleniya { get; set; }
 
-	// Класс ID
+	/// <summary>
+	/// Класс ID
+	/// </summary>
 	[Required(ErrorMessage = "Класс обязателен")]
 	public long KlassID { get; set; }
 
-	/// <summary> Навигационное свойство для роли. </summary>
+	/// <summary>
+	/// Навигационное свойство
+	/// </summary>
 	[ForeignKey("KlassID")]
 	public virtual KlassEntity Klass { get; set; }
 }

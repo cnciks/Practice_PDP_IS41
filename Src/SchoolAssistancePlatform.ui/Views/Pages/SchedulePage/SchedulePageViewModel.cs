@@ -1,4 +1,5 @@
-﻿using Avalonia.Collections;
+﻿using System.Reactive;
+using System.Threading.Tasks;
 
 using ReactiveUI;
 
@@ -13,34 +14,34 @@ internal class SchedulePageViewModel : ReactiveObject, IWorkSpacePage
 
 	public Permissions Permission => Permissions.SchedulePage;
 
-	private AvaloniaList<string> _classes = new() { "5А", "5Б", "5В" }; // Классы
-	private AvaloniaList<Lesson> _lessons; // Расписание уроков
+	#region Data
 
-	public AvaloniaList<string> Classes => _classes;
-	public AvaloniaList<Lesson> Lessons => _lessons ?? (_lessons = CreateLessons());
+	#endregion
 
-	// Метод формирования расписания уроков
-	private AvaloniaList<Lesson> CreateLessons()
+	#region Property
+
+	public ReactiveCommand<Unit, Task> EditScheduleCommand { get; }
+
+
+	#endregion
+
+	#region .ctor
+
+	public SchedulePageViewModel()
 	{
-		return new AvaloniaList<Lesson>()
-			{
-				new Lesson("8:30", "Математика", "Петрова"),
-				new Lesson("9:20", "Русский язык", "Смирнова"),
-				new Lesson("10:10", "Английский язык", "Кларк")
-			};
+		EditScheduleCommand = ReactiveCommand.Create(EditSchedule);
 	}
 
-	public class Lesson
+	private Task EditSchedule()
 	{
-		public string Time { get; }
-		public string Subject { get; }
-		public string Teacher { get; }
-
-		public Lesson(string time, string subject, string teacher)
-		{
-			Time = time;
-			Subject = subject;
-			Teacher = teacher;
-		}
+		return Task.CompletedTask;
 	}
+
+	public Task LoadPageAsync()
+	{
+		return Task.CompletedTask;
+	}
+
+	#endregion
+
 }

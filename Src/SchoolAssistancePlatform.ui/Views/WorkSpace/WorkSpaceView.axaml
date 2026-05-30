@@ -24,6 +24,7 @@
 				</StackPanel>
 
 				<StackPanel Grid.Column="1"
+                            IsVisible="False"
 							HorizontalAlignment="Center"
 							Orientation="Horizontal">
 
@@ -43,6 +44,7 @@
 					  ColumnDefinitions="Auto, Auto, Auto">
 
 					<Button Background="Transparent"
+                            IsVisible="False"
 							Grid.Column="0"
                             Command="{Binding ChangeThemeCommand}">
 						<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/dark-mode.png"
@@ -52,6 +54,7 @@
 
 					<ToggleButton x:Name="notification"
                                   Background="Transparent"
+                                  IsVisible="False"
 							      Grid.Column="1"
 							      Margin="10 0">
 						<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/notification.png"

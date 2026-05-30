@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Styling;
+using Avalonia.Threading;
 
 using ReactiveUI;
 
@@ -95,6 +96,14 @@ internal class WorkSpaceViewModel : ReactiveObject
 			if(menu != null)
 			{
 				SelectedMenuItem = menu;
+			}
+		};
+
+		PropertyChanged += (_, p) =>
+		{
+			if(p.PropertyName == nameof(SelectedMenuItem))
+			{
+				Dispatcher.UIThread.Invoke(() => SelectedMenuItem.Page.LoadPageAsync());
 			}
 		};
 

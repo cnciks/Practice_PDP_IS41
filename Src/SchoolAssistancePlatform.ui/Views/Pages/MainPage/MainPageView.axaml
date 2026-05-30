@@ -56,7 +56,7 @@
                     <TextBlock FontWeight="Bold"
                                FontSize="16"
                                VerticalAlignment="Center">
-                        <Run Text="0"/>
+                        <Run Text="{Binding StudentsCount}"/>
                         <Run Text=" Учеников"/>
                     </TextBlock>
                     
@@ -82,7 +82,7 @@
                     <TextBlock FontWeight="Bold"
                                FontSize="16"
                                VerticalAlignment="Center">
-                        <Run Text="0"/>
+                        <Run Text="{Binding EmployeesCount}"/>
                         <Run Text=" Сотрудников"/>
                     </TextBlock>
                     
@@ -108,7 +108,7 @@
                     <TextBlock FontWeight="Bold"
                                FontSize="16"
                                VerticalAlignment="Center">
-                        <Run Text="0"/>
+                        <Run Text="{Binding ClassesCount}"/>
                         <Run Text=" Классов"/>
                     </TextBlock>
                     
@@ -207,7 +207,7 @@
                                 HorizontalContentAlignment="Stretch"
                                 Background="Transparent"
                                 BorderThickness="1"
-                                BorderBrush="Black"
+                                BorderBrush="#CCCCCC"
                                 Margin="5"
                                 Command="{Binding OpenMenuByNameCommand}"
                                 CommandParameter="Сообщения">
@@ -302,7 +302,7 @@
                             HorizontalContentAlignment="Stretch"
                             Background="Transparent"
                             BorderThickness="1"
-                            BorderBrush="Black"
+                            BorderBrush="#CCCCCC"
                             Margin="5"
                             Grid.Column="1"
                             Command="{Binding OpenMenuByNameCommand}"

@@ -16,7 +16,6 @@ public sealed class SAPDbContext(DatabaseSettings databaseSettings) : DbContext
 
 	public DbSet<RolePermissionEntity> RolePermissions { get; set; }
 
-
 	public DbSet<SotrudnikEntity> Sotrudniki { get; set; }
 
 	public DbSet<UchenikEntity> Uchenik { get; set; }

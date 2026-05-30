@@ -3,46 +3,68 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SchoolAssistancePlatform.Base.Entity.School;
 
-[Table("Raspisanie", Schema = "School")]
+/// <summary>
+/// Представляет расписание занятий (уроков) для класса
+/// </summary>
 public class RaspisanieEntity
 {
-	// Первичный ключ
+	/// <summary>
+	/// Первичный ключ
+	/// </summary>
 	[Key]
 	public long RaspisanieID { get; set; }
 
-	// Внешний ключ, ссылка на класс
+	/// <summary>
+	/// Внешний ключ, ссылка на класс
+	/// </summary>
 	[Required(ErrorMessage = "Класс обязателен")]
 	public long KlassID { get; set; }
 
-	/// <summary> Навигационное свойство. </summary>
+	/// <summary>
+	/// Навигационное свойство
+	/// </summary>
 	[ForeignKey("KlassID")]
 	public virtual KlassEntity Klass { get; set; }
 
-	// Внешний ключ, ссылка на предмет
+	/// <summary>
+	/// Внешний ключ, ссылка на предмет
+	/// </summary>
 	[Required(ErrorMessage = "Предмет обязателен")]
 	public long PredmetID { get; set; }
 
-	/// <summary> Навигационное свойство. </summary>
+	/// <summary>
+	/// Навигационное свойство
+	/// </summary>
 	[ForeignKey("PredmetID")]
 	public virtual UchebniyPredmetEntity UchebniyPredmet { get; set; }
 
-	// Внешний ключ, ссылка на преподавателя
+	/// <summary>ы
+	/// Внешний ключ, ссылка на преподавателя
+	/// </summary>
 	[Required(ErrorMessage = "Преподаватель обязателен")]
 	public long SotrudnikID { get; set; }
 
-	/// <summary> Навигационное свойство. </summary>
+	/// <summary>
+	/// Навигационное свойство
+	/// </summary>
 	[ForeignKey("SotrudnikID")]
 	public virtual SotrudnikEntity Sotrudnik { get; set; }
 
-	// День недели (1-понедельник, ..., 7-воскресенье)
+	/// <summary>
+	/// День недели (1-понедельник, ..., 7-воскресенье)
+	/// </summary>
 	[Required(ErrorMessage = "День недели обязателен")]
 	public long DenNedeli { get; set; }
 
-	// Номер урока в расписании
+	/// <summary>
+	/// Номер урока в расписании
+	/// </summary>
 	[Required(ErrorMessage = "Номер урока обязателен")]
 	public short NomerUroka { get; set; }
 
-	// Кабинет проведения занятия
+	/// <summary>
+	/// Кабинет проведения занятия
+	/// </summary>
 	[Required(ErrorMessage = "Кабинет обязателен"), StringLength(10)]
 	public string Kabinet { get; set; }
 }

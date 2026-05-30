@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive;
+using System.Threading.Tasks;
 using System.Timers;
 
 using Avalonia.Collections;
@@ -10,6 +11,7 @@ using SchoolAssistancePlatform.framework;
 using SchoolAssistancePlatform.framework.Data;
 using SchoolAssistancePlatform.UI.Actions;
 using SchoolAssistancePlatform.UI.Interfaces;
+using SchoolAssistancePlatform.UI.Services;
 
 namespace SchoolAssistancePlatform.UI.Views.Pages.MainPage;
 
@@ -18,11 +20,15 @@ internal class MainPageViewModel : ReactiveObject, IWorkSpacePage
 	#region Data
 
 	private readonly MenuActions _menuActions;
-
+	private readonly StatisticsService _statisticsService;
 	private string _greeting    = "Загрузка...";
 	private string _currentDate = "Загрузка...";
 
 	private Timer _timer;
+
+	private int _studentsCount;
+	private int _employeesCount;
+	private int _classesCount;
 
 	#endregion
 
@@ -37,10 +43,29 @@ internal class MainPageViewModel : ReactiveObject, IWorkSpacePage
 		get => _greeting;
 		set => this.RaiseAndSetIfChanged(ref _greeting, value);
 	}
+
 	public string CurrentDate
 	{
 		get => _currentDate;
 		set => this.RaiseAndSetIfChanged(ref _currentDate, value);
+	}
+
+	public int StudentsCount
+	{
+		get => _studentsCount;
+		set => this.RaiseAndSetIfChanged(ref _studentsCount, value);
+	}
+
+	public int EmployeesCount
+	{
+		get => _employeesCount;
+		set => this.RaiseAndSetIfChanged(ref _employeesCount, value);
+	}
+
+	public int ClassesCount
+	{
+		get => _classesCount;
+		set => this.RaiseAndSetIfChanged(ref _classesCount, value);
 	}
 
 	public AvaloniaList<PrikazDto> Orders { get; } = [];
@@ -49,9 +74,12 @@ internal class MainPageViewModel : ReactiveObject, IWorkSpacePage
 
 	#endregion
 
-	public MainPageViewModel(MenuActions menuActions)
+	public MainPageViewModel(
+		MenuActions menuActions,
+		StatisticsService statisticsService)
 	{
-		_menuActions = menuActions;
+		_menuActions       = menuActions;
+		_statisticsService = statisticsService;
 
 		OpenMenuByNameCommand = ReactiveCommand.Create<string>(OpenMenuByName);
 
@@ -80,5 +108,24 @@ internal class MainPageViewModel : ReactiveObject, IWorkSpacePage
 
 		Greeting    = greeting;
 		CurrentDate = DateTime.Now.ToString("dd MMMM yyyy");
+	}
+
+	public async Task LoadPageAsync()
+	{
+		await LoadStatistics();
+	}
+
+	private async Task LoadStatistics()
+	{
+		try
+		{
+			StudentsCount  = await _statisticsService.GetStudentsCountAsync();
+			EmployeesCount = await _statisticsService.GetEmployeesCountAsync();
+			ClassesCount   = await _statisticsService.GetClassesCountAsync();
+		}
+		catch(Exception ex)
+		{
+
+		}
 	}
 }

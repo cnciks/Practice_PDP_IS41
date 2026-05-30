@@ -3,46 +3,69 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SchoolAssistancePlatform.Base.Entity.School;
 
+/// <summary>
+/// Представляет сотрудника учебного заведения
+/// </summary>
 [Table("Sotrudnik", Schema = "School")]
 public class SotrudnikEntity
 {
-	// Первичный ключ
+	/// <summary>
+	/// Первичный ключ
+	/// </summary>
 	[Key]
 	public long SotrudnikID { get; set; }
 
-	// Фамилия
+	/// <summary>
+	/// Фамилия
+	/// </summary>
 	[Required(ErrorMessage = "Фамилия обязательна"), StringLength(100)]
 	public string Familia { get; set; }
 
-	// Имя
+	/// <summary>
+	/// Имя
+	/// </summary>
 	[Required(ErrorMessage = "Имя обязательно"), StringLength(100)]
 	public string Imya { get; set; }
 
-	// Отчество
+	/// <summary>
+	/// Отчество
+	/// </summary>
 	[StringLength(100)]
 	public string Otchestvo { get; set; }
 
-	// Дата рождения
+	/// <summary>
+	/// Дата рождения
+	/// </summary>
 	[Required(ErrorMessage = "Дата рождения обязательна")]
 	public DateTime DataRozhdeniya { get; set; }
 
-	// Должность
+	/// <summary>
+	/// Должность
+	/// </summary>
 	[Required(ErrorMessage = "Должность обязательна"), StringLength(100)]
 	public string Dolzhnost { get; set; }
 
-	// Email
+	/// <summary>
+	/// Email
+	/// </summary>
 	[StringLength(255)]
 	public string Email { get; set; }
 
-	// Телефон
+	/// <summary>
+	/// Телефон
+	/// </summary>
 	[StringLength(20)]
 	public string Telefon { get; set; }
 
-	// Дата приема
+	/// <summary>
+	/// Дата приема
+	/// </summary>
 	[Required(ErrorMessage = "Дата приема обязательна")]
 	public DateTime DataPriema { get; set; }
 
-	// Статус
+	/// <summary>
+	/// Статус
+	/// </summary>
 	[StringLength(50)]
 	public string Status { get; set; }
 }

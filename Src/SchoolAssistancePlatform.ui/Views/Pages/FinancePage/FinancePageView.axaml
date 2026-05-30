@@ -2,7 +2,165 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+
              x:Class="SchoolAssistancePlatform.UI.FinancePageView">
-  FinancePageView
+
+    <Grid RowDefinitions="Auto, *"
+          Margin="20">       
+
+		<Grid ColumnDefinitions="*, Auto"
+			  Margin="0 0 0 20">
+
+			<Border BorderThickness="1"
+					BorderBrush="#CCCCCC"
+					Margin="0 0 20 0"
+					CornerRadius="3">
+                <Grid VerticalAlignment="Center"
+                      ColumnDefinitions="*, Auto">                    
+				    <StackPanel VerticalAlignment="Center"
+				    			Orientation="Horizontal"
+				    			Margin="20 0">
+				    	<ComboBox PlaceholderText="Год"
+				    			  Width="180"
+				    			  Margin="0 0 20 0"/>
+				    </StackPanel>
+
+                    
+				    <ToggleButton x:Name="notification"
+				    			  Background="Transparent"
+                                  IsChecked="{Binding ApplyFilter}"
+				    			  Grid.Column="1">
+				    	<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/filter.png"
+				    		Width="32" Height="32"
+				    		Margin="10"/>
+				    </ToggleButton>
+
+                </Grid>
+			</Border>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                
+
+			<Button HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					Background="Transparent"
+					BorderThickness="1"
+					BorderBrush="#CCCCCC"
+					Grid.Column="1"
+                    Margin="0 0 20 0"
+					Command="{Binding ExportCommand}">
+			
+				<Grid ColumnDefinitions="Auto, *"
+					  HorizontalAlignment="Stretch"
+					  Margin="10 0">
+			
+					 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/spreadsheet.png"
+							Width="32" Height="32"
+							HorizontalAlignment="Center"
+							Margin="10"/>
+			
+					<TextBlock Text="Экспорт"
+							   FontWeight="Bold"
+							   Grid.Column="1"
+							   VerticalAlignment="Center"/>
+				</Grid>
+			
+			</Button>
+
+			<Button HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					Background="Transparent"
+					BorderThickness="1"
+					BorderBrush="#CCCCCC"
+					Grid.Column="1"
+					Command="{Binding ReportCommand}">
+			
+				<Grid ColumnDefinitions="Auto, *"
+					  HorizontalAlignment="Stretch"
+					  Margin="10 0">
+			
+					 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/pdf-file.png"
+							Width="32" Height="32"
+							HorizontalAlignment="Center"
+							Margin="10"/>
+			
+					<TextBlock Text="Отчет"
+							   FontWeight="Bold"
+							   Grid.Column="1"
+							   VerticalAlignment="Center"/>
+				</Grid>
+			
+			</Button>
+            </StackPanel>
+
+		</Grid>
+
+        <Border Background="White"
+                Grid.Row="1">
+
+        <Grid RowDefinitions="Auto, *">
+                        
+            <Grid ColumnDefinitions="*,*"
+                  Margin="0 0 0 20">
+                
+                <Border BorderBrush="#DDD" BorderThickness="1" Padding="15" CornerRadius="4"
+                        Margin="0 0 20 0"
+                        Grid.Column="0">
+                    <StackPanel>
+                        <TextBlock Text="Доходы" FontWeight="Bold" FontSize="14" Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding IncomeItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" Margin="0,2"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+                
+                <Border BorderBrush="#DDD" BorderThickness="1" Padding="15" CornerRadius="4"
+                        Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock Text="Расходы" FontWeight="Bold" FontSize="14" Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding ExpenseItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" Margin="0,2"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            
+            <Border BorderBrush="#DDD" BorderThickness="1" Padding="15" CornerRadius="4"
+                    Grid.Row="1"
+                    VerticalAlignment="Stretch">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,*">
+                        <TextBlock Grid.Column="0" Text="Операция" FontWeight="Bold"/>
+                        <TextBlock Grid.Column="1" Text="Значение" FontWeight="Bold" HorizontalAlignment="Right"/>
+                    </Grid>
+                    
+                    <ItemsControl ItemsSource="{Binding Transactions}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="*,*">
+                                    <TextBlock Grid.Column="0" Text="{Binding Operation}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Amount}" 
+                                               HorizontalAlignment="Right"
+                                               Foreground="{Binding Amount}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+            
+        </Grid>
+    </Border>
+    </Grid>
+
 </UserControl>

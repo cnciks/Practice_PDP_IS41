@@ -41,8 +41,6 @@ public partial class App : Application
 		var sapDbContext = Container.Resolve<SAPDbContext>();
 
 		sapDbContext.Database.EnsureCreated();
-
-		MapsterConfig.Configure();
 	}
 
 	public override async void OnFrameworkInitializationCompleted()

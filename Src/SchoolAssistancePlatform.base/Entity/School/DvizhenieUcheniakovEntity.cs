@@ -6,11 +6,15 @@ namespace SchoolAssistancePlatform.Base.Entity.School;
 [Table("DvizhenieUcheniakov", Schema = "School")]
 public class DvizhenieUcheniakovEntity
 {
-	// Первичный ключ
+	/// <summary>
+	/// Первичный ключ
+	/// </summary>
 	[Key]
 	public long DvizhenieID { get; set; }
 
-	// Внешний ключ, ссылка на ученика
+	/// <summary>
+	/// Внешний ключ, ссылка на ученика
+	/// </summary>
 	[Required(ErrorMessage = "Идентификатор ученика обязателен")]
 	public long UchenikID { get; set; }
 
@@ -18,19 +22,27 @@ public class DvizhenieUcheniakovEntity
 	[ForeignKey("UchenikID")]
 	public virtual UchenikEntity Uchenik { get; set; }
 
-	// Дата изменения
+	/// <summary>
+	/// Дата изменения
+	/// </summary>
 	[Required(ErrorMessage = "Дата изменения обязательна")]
 	public DateTime DataIzmeneniya { get; set; }
 
-	// Тип движения (например, перевод, отчисление, восстановление)
+	/// <summary>
+	/// Тип движения (например, перевод, отчисление, восстановление)
+	/// </summary>
 	[Required(ErrorMessage = "Тип движения обязателен"), StringLength(50)]
 	public string TipDvizheniya { get; set; }
 
-	// Основание (причина) движения
+	/// <summary>
+	/// Основание (причина) движения
+	/// </summary>
 	[Required(ErrorMessage = "Основание обязательно"), StringLength(255)]
 	public string Osnovanie { get; set; }
 
-	// Дополнительные комментарии
-	[StringLength(500)] // Допустимо больше текста
+	/// <summary>
+	/// Дополнительные комментарии
+	/// </summary>
+	[StringLength(500)]
 	public string Kommentariy { get; set; }
 }
