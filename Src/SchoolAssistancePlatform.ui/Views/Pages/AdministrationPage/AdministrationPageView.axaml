@@ -408,16 +408,18 @@
                                 <TextBlock Text="Права доступа" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
                                 <Border Background="#F8F9FA" CornerRadius="6" Padding="12,8"
                                         Height="300">
-                                    <ItemsControl ItemsSource="{Binding NewRolePermissions}" >
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:PermissionItemViewModel">
-                                                <CheckBox IsChecked="{Binding IsChecked}"
-                                                          Content="{Binding Label}"
-                                                          FontSize="12"
-                                                          Margin="0,3"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>  
+                                    <ScrollViewer>                                       
+                                        <ItemsControl ItemsSource="{Binding NewRolePermissions}" >
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:PermissionItemViewModel">
+                                                    <CheckBox IsChecked="{Binding IsChecked}"
+                                                              Content="{Binding Label}"
+                                                              FontSize="12"
+                                                              Margin="0,3"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
                                 </Border>
                             </StackPanel>
 
