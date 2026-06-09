@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using ReactiveUI;
 
@@ -8,9 +8,9 @@ namespace SchoolAssistancePlatform.UI.Views.Pages.CurriculumPage;
 
 internal sealed class PlanFormViewModel : ReactiveObject
 {
-	private string _nazvanie   = string.Empty;
-	private int    _godNachala = DateTime.Now.Year;
-	private string _opisanie   = string.Empty;
+	private string _nazvanie = string.Empty;
+	private int _godNachala  = DateTime.Now.Year;
+	private string _opisanie = string.Empty;
 
 	public string Nazvanie
 	{

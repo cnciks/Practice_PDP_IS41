@@ -212,6 +212,8 @@ public sealed class KlassRepository : IKlassRepository
 
 		_mapper.Map(dto, existing);
 
+		existing.KlassID = id;
+
 		_context.Klassy.Update(existing);
 		await _context.SaveChangesAsync();
 

@@ -165,6 +165,7 @@ internal class FinancePageViewModel : ReactiveObject, IWorkSpacePage
 		var balance  = income - expense;
 
 		SummaryCards.Clear();
+
 		SummaryCards.Add(new SummaryCardViewModel
 		{
 			Label  = "Доходы",
@@ -172,6 +173,7 @@ internal class FinancePageViewModel : ReactiveObject, IWorkSpacePage
 			Color  = "#27AE60",
 			Icon   = "📈",
 		});
+
 		SummaryCards.Add(new SummaryCardViewModel
 		{
 			Label  = "Расходы",
@@ -179,6 +181,7 @@ internal class FinancePageViewModel : ReactiveObject, IWorkSpacePage
 			Color  = "#E74C3C",
 			Icon   = "📉",
 		});
+
 		SummaryCards.Add(new SummaryCardViewModel
 		{
 			Label  = "Баланс",
@@ -189,6 +192,7 @@ internal class FinancePageViewModel : ReactiveObject, IWorkSpacePage
 	}
 
 	private Task Export() => Task.CompletedTask;
+
 	private Task Report()  => Task.CompletedTask;
 
 	#endregion

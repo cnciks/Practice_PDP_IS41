@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using ReactiveUI;
 
@@ -8,18 +8,29 @@ namespace SchoolAssistancePlatform.UI.Views.Pages.EmployeesPage;
 
 internal sealed class EmployeeViewModel : ReactiveObject
 {
-	public long     SotrudnikID     { get; init; }
-	public string   Familia         { get; init; } = string.Empty;
-	public string   Imya            { get; init; } = string.Empty;
-	public string   Otchestvo       { get; init; } = string.Empty;
-	public DateTime DataRozhdeniya  { get; init; }
-	public string   Dolzhnost       { get; init; } = string.Empty;
-	public string   Email           { get; init; } = string.Empty;
-	public string   Telefon         { get; init; } = string.Empty;
-	public DateTime DataPriema      { get; init; }
-	public string   Status          { get; init; } = string.Empty;
-	public string   ClassLeadership { get; init; } = string.Empty;
-	public string   RoomNumber      { get; init; } = string.Empty;
+	public long SotrudnikID { get; init; }
+
+	public string Familia { get; init; } = string.Empty;
+
+	public string Imya { get; init; } = string.Empty;
+
+	public string Otchestvo { get; init; } = string.Empty;
+
+	public DateTime DataRozhdeniya { get; init; }
+
+	public string Dolzhnost { get; init; } = string.Empty;
+
+	public string Email { get; init; } = string.Empty;
+
+	public string Telefon { get; init; } = string.Empty;
+
+	public DateTime DataPriema { get; init; }
+
+	public string Status { get; init; } = string.Empty;
+
+	public string ClassLeadership { get; init; } = string.Empty;
+
+	public string RoomNumber { get; init; } = string.Empty;
 
 	public string FullName => string.IsNullOrWhiteSpace(Otchestvo)
 		? $"{Familia} {Imya}"
@@ -50,15 +61,16 @@ internal sealed class EmployeeViewModel : ReactiveObject
 	public static EmployeeViewModel FromDto(SotrudnikDto dto, string classLeadership, string roomNumber) => new()
 	{
 		SotrudnikID    = dto.SotrudnikID,
-		Familia        = dto.Familia        ?? string.Empty,
-		Imya           = dto.Imya           ?? string.Empty,
-		Otchestvo      = dto.Otchestvo      ?? string.Empty,
+		Familia        = dto.Familia ?? string.Empty,
+		Imya           = dto.Imya ?? string.Empty,
+		Otchestvo      = dto.Otchestvo ?? string.Empty,
 		DataRozhdeniya = dto.DataRozhdeniya,
-		Dolzhnost      = dto.Dolzhnost      ?? string.Empty,
-		Email          = dto.Email          ?? string.Empty,
-		Telefon        = dto.Telefon        ?? string.Empty,
+		Dolzhnost      = dto.Dolzhnost ?? string.Empty,
+		Email          = dto.Email ?? string.Empty,
+		Telefon        = dto.Telefon ?? string.Empty,
 		DataPriema     = dto.DataPriema,
-		Status         = dto.Status         ?? string.Empty,
+		Status         = dto.Status ?? string.Empty,
+
 		ClassLeadership = classLeadership,
 		RoomNumber      = roomNumber,
 	};

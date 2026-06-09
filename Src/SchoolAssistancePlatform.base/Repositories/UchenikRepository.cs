@@ -141,6 +141,9 @@ public sealed class UchenikRepository(SAPDbContext context) : IUchenikRepository
 			throw new InvalidOperationException($"Класс с ID {dto.KlassID} не найден");
 
 		dto.Adapt(existing);
+
+		existing.UchenikID = id;
+
 		_context.Uchenik.Update(existing);
 		await _context.SaveChangesAsync();
 

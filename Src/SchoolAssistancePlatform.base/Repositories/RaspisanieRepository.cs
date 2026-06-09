@@ -208,6 +208,9 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 			throw new InvalidOperationException($"Расписание для класса {klass.NomerKlassa} на {GetDayName(dto.DenNedeli)} {dto.NomerUroka} урок уже существует");
 
 		dto.Adapt(existing);
+
+		existing.RaspisanieID = id;
+
 		_context.Raspisanie.Update(existing);
 		await _context.SaveChangesAsync();
 

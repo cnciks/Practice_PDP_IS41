@@ -15,6 +15,8 @@ using SchoolAssistancePlatform.UI.Interfaces;
 using SchoolAssistancePlatform.UI.Services;
 using SchoolAssistancePlatform.UI.Views.WorkSpace;
 
+using static SchoolAssistancePlatform.UI.Views.Pages.AdministrationPage.UserViewModel;
+
 namespace SchoolAssistancePlatform.UI.Views.Pages.AdministrationPage;
 
 internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
@@ -25,22 +27,20 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 
 	private List<UserViewModel> _allUsers = [];
 
-	private string        _activeTab        = "users";
-	private string        _searchText       = string.Empty;
-	private bool          _isUserFormVisible;
-	private bool          _isRoleFormVisible;
-	private bool          _isUsersTab       = true;
-	private bool          _isRolesTab;
+	private string _activeTab = "users";
+	private string _searchText = string.Empty;
+	private bool _isUserFormVisible;
+	private bool _isRoleFormVisible;
+	private bool _isUsersTab = true;
+	private bool _isRolesTab;
 
-	// Форма нового пользователя
-	private string             _newLogin       = string.Empty;
-	private string             _newPassword    = string.Empty;
-	private string             _newEmail       = string.Empty;
-	private RoleViewModel?     _newRole;
-	private EmployeeItem?      _newSotrudnik;
+	private string _newLogin = string.Empty;
+	private string _newPassword = string.Empty;
+	private string _newEmail = string.Empty;
+	private RoleViewModel? _newRole;
+	private EmployeeItem? _newSotrudnik;
 
-	// Форма новой роли
-	private string _newRoleName        = string.Empty;
+	private string _newRoleName = string.Empty;
 	private string _newRoleDescription = string.Empty;
 
 	private string? _formError;
@@ -56,13 +56,13 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 
 	public Permissions Permission => Permissions.AdministrationPage;
 
-	public AvaloniaList<UserViewModel>           Users              { get; } = [];
+	public AvaloniaList<UserViewModel> Users { get; } = [];
 
-	public AvaloniaList<RoleViewModel>           Roles              { get; } = [];
+	public AvaloniaList<RoleViewModel> Roles { get; } = [];
 
 	public AvaloniaList<PermissionItemViewModel> NewRolePermissions { get; } = [];
 
-	public AvaloniaList<EmployeeItem>            Employees          { get; } = [];
+	public AvaloniaList<EmployeeItem> Employees { get; } = [];
 
 	public string ActiveTab
 	{
@@ -163,7 +163,7 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 
 	public ReactiveCommand<Unit, Unit> AddUserCommand { get; }
 
-	public ReactiveCommand<Unit, Unit>  CancelFormCommand { get; }
+	public ReactiveCommand<Unit, Unit> CancelFormCommand { get; }
 
 	public ReactiveCommand<Unit, Task> SaveUserCommand { get; }
 
@@ -173,7 +173,7 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 
 	public ReactiveCommand<Unit, Unit> AddRoleCommand { get; }
 
-	public ReactiveCommand<Unit, Unit>  CancelRoleFormCommand { get; }
+	public ReactiveCommand<Unit, Unit> CancelRoleFormCommand { get; }
 
 	public ReactiveCommand<Unit, Task> SaveRoleCommand { get; }
 
@@ -187,20 +187,19 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 	{
 		_service = service;
 
-		AddUserCommand        = ReactiveCommand.Create(OpenUserForm);
-		CancelFormCommand     = ReactiveCommand.Create(CloseUserForm);
-		SaveUserCommand       = ReactiveCommand.Create(SaveUser);
-		DeleteUserCommand     = ReactiveCommand.Create<UserViewModel?, Task>(DeleteUser);
-		SwitchTabCommand      = ReactiveCommand.Create<string>(SwitchTab);
-		AddRoleCommand        = ReactiveCommand.Create(OpenRoleForm);
+		AddUserCommand = ReactiveCommand.Create(OpenUserForm);
+		CancelFormCommand = ReactiveCommand.Create(CloseUserForm);
+		SaveUserCommand = ReactiveCommand.Create(SaveUser);
+		DeleteUserCommand = ReactiveCommand.Create<UserViewModel?, Task>(DeleteUser);
+		SwitchTabCommand = ReactiveCommand.Create<string>(SwitchTab);
+		AddRoleCommand = ReactiveCommand.Create(OpenRoleForm);
 		CancelRoleFormCommand = ReactiveCommand.Create(CloseRoleForm);
-		SaveRoleCommand       = ReactiveCommand.Create(SaveRole);
-		DeleteRoleCommand     = ReactiveCommand.Create<RoleViewModel?, Task>(DeleteRole);
+		SaveRoleCommand = ReactiveCommand.Create(SaveRole);
+		DeleteRoleCommand = ReactiveCommand.Create<RoleViewModel?, Task>(DeleteRole);
 
 		NewRolePermissions.AddRange(
 			AccountService.AllPermissionsArray
 				.Select(p => PermissionItemViewModel.FromPermission(p)));
-
 
 		PropertyChanged += OnPropertyChanged;
 	}
@@ -217,7 +216,7 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 
 	private void SwitchTab(string tab)
 	{
-		ActiveTab         = tab;
+		ActiveTab = tab;
 		IsUserFormVisible = false;
 		IsRoleFormVisible = false;
 		this.RaisePropertyChanged(nameof(IsAnyFormVisible));
@@ -239,12 +238,12 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 
 	private async void OpenUserForm()
 	{
-		NewLogin          = string.Empty;
-		NewPassword       = string.Empty;
-		NewEmail          = string.Empty;
-		NewRole           = Roles.FirstOrDefault();
-		NewSotrudnik      = null;
-		FormError         = null;
+		NewLogin = string.Empty;
+		NewPassword = string.Empty;
+		NewEmail = string.Empty;
+		NewRole = Roles.FirstOrDefault();
+		NewSotrudnik = null;
+		FormError = null;
 		IsRoleFormVisible = false;
 		IsUserFormVisible = true;
 		this.RaisePropertyChanged(nameof(IsAnyFormVisible));
@@ -261,25 +260,25 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 	private void CloseUserForm()
 	{
 		IsUserFormVisible = false;
-		FormError         = null;
+		FormError = null;
 		this.RaisePropertyChanged(nameof(IsAnyFormVisible));
 	}
 
 	private void OpenRoleForm()
 	{
-		NewRoleName        = string.Empty;
+		NewRoleName = string.Empty;
 		NewRoleDescription = string.Empty;
-		RoleFormError      = null;
+		RoleFormError = null;
 		foreach(var p in NewRolePermissions) p.IsChecked = false;
-		IsUserFormVisible  = false;
-		IsRoleFormVisible  = true;
+		IsUserFormVisible = false;
+		IsRoleFormVisible = true;
 		this.RaisePropertyChanged(nameof(IsAnyFormVisible));
 	}
 
 	private void CloseRoleForm()
 	{
 		IsRoleFormVisible = false;
-		RoleFormError     = null;
+		RoleFormError = null;
 		this.RaisePropertyChanged(nameof(IsAnyFormVisible));
 	}
 
@@ -287,9 +286,9 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 	{
 		FormError = null;
 
-		if(string.IsNullOrWhiteSpace(NewLogin))    { FormError = "Введите логин";   return; }
-		if(string.IsNullOrWhiteSpace(NewPassword)) { FormError = "Введите пароль";  return; }
-		if(NewRole is null)                        { FormError = "Выберите роль";    return; }
+		if(string.IsNullOrWhiteSpace(NewLogin)) { FormError = "Введите логин"; return; }
+		if(string.IsNullOrWhiteSpace(NewPassword)) { FormError = "Введите пароль"; return; }
+		if(NewRole is null) { FormError = "Выберите роль"; return; }
 
 		if(_allUsers.Any(u => u.Login.Equals(NewLogin, StringComparison.OrdinalIgnoreCase)))
 		{
@@ -371,11 +370,11 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 			var dtos = await _service.GetAllUsersAsync();
 			_allUsers = dtos.Select(u => new UserViewModel
 			{
-				Id           = u.Id,
-				Login        = u.Login,
-				Email        = u.Email,
-				RoleName     = u.Role?.Name ?? "—",
-				RoleId       = u.Role?.Id ?? 0,
+				Id = u.Id,
+				Login = u.Login,
+				Email = u.Email,
+				RoleName = u.Role?.Name ?? "—",
+				RoleId = u.Role?.Id ?? 0,
 				SotrudnikFIO = u.SotrudnikFIO,
 			}).ToList();
 			ApplyFilter();
@@ -397,11 +396,11 @@ internal class AdministrationPageViewModel : ReactiveObject, IWorkSpacePage
 				usersByRole.TryGetValue(r.Id, out var count);
 				return new RoleViewModel
 				{
-					Id          = r.Id,
-					Name        = r.Name,
+					Id = r.Id,
+					Name = r.Name,
 					Description = r.Description,
 					Permissions = r.Permissions,
-					UserCount   = count,
+					UserCount = count,
 				};
 			}));
 		}

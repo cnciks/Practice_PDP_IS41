@@ -33,13 +33,11 @@ internal class CurriculumPageViewModel : ReactiveObject, IWorkSpacePage
 
 	private CurriculumTab _activeTab = CurriculumTab.Matrix;
 
-	// Subject form
 	private bool    _isSubjectFormVisible;
 	private bool    _isSubjectEditMode;
 	private long    _editingSubjectId;
 	private string? _subjectFormError;
 
-	// Plan form
 	private bool    _isPlanFormVisible;
 	private bool    _isPlanEditMode;
 	private long    _editingPlanId;
@@ -49,14 +47,18 @@ internal class CurriculumPageViewModel : ReactiveObject, IWorkSpacePage
 
 	#region Properties
 
-	public string  Title      => "Учебный план";
-	public Bitmap? Icon       => MenuIcon.Load("avares://SchoolAssistancePlatform.ui/Assets/Images/folder.png");
+	public string Title => "Учебный план";
+
+	public Bitmap? Icon => MenuIcon.Load("avares://SchoolAssistancePlatform.ui/Assets/Images/folder.png");
+
 	public Permissions Permission => Permissions.CurriculumPage;
 
-	// Matrix
 	public AvaloniaList<CurriculumFlatRowViewModel> Rows    { get; } = [];
+
 	public AvaloniaList<string>                     Headers { get; } = [];
+
 	public AvaloniaList<KlassDto>         FilterKlasses { get; } = [];
+
 	public AvaloniaList<UchebniyPlanDto>  FilterPlans   { get; } = [];
 
 	public KlassDto? FilterKlass
@@ -71,7 +73,6 @@ internal class CurriculumPageViewModel : ReactiveObject, IWorkSpacePage
 		set => this.RaiseAndSetIfChanged(ref _filterPlan, value);
 	}
 
-	// Tabs
 	public CurriculumTab ActiveTab
 	{
 		get => _activeTab;
@@ -79,11 +80,13 @@ internal class CurriculumPageViewModel : ReactiveObject, IWorkSpacePage
 	}
 
 	public bool IsMatrixTab   => _activeTab == CurriculumTab.Matrix;
+
 	public bool IsSubjectsTab => _activeTab == CurriculumTab.Subjects;
+
 	public bool IsPlansTab    => _activeTab == CurriculumTab.Plans;
 
-	// Subjects CRUD
 	public AvaloniaList<SubjectItemViewModel> Subjects { get; } = [];
+
 	public SubjectFormViewModel SubjectForm { get; } = new();
 
 	public bool IsSubjectFormVisible
@@ -106,8 +109,8 @@ internal class CurriculumPageViewModel : ReactiveObject, IWorkSpacePage
 		set => this.RaiseAndSetIfChanged(ref _subjectFormError, value);
 	}
 
-	// Plans CRUD
 	public AvaloniaList<PlanItemViewModel> Plans { get; } = [];
+
 	public PlanFormViewModel PlanForm { get; } = new();
 
 	public bool IsPlanFormVisible
@@ -130,23 +133,30 @@ internal class CurriculumPageViewModel : ReactiveObject, IWorkSpacePage
 		set => this.RaiseAndSetIfChanged(ref _planFormError, value);
 	}
 
-	// Tab commands
 	public ReactiveCommand<Unit, Unit> ShowMatrixCommand   { get; }
+
 	public ReactiveCommand<Unit, Unit> ShowSubjectsCommand { get; }
+
 	public ReactiveCommand<Unit, Unit> ShowPlansCommand    { get; }
 
-	// Subject commands
 	public ReactiveCommand<Unit, Unit>                AddSubjectCommand    { get; }
+
 	public ReactiveCommand<Unit, Unit>                CancelSubjectCommand { get; }
+
 	public ReactiveCommand<Unit, Task>                SaveSubjectCommand   { get; }
+
 	public ReactiveCommand<SubjectItemViewModel, Unit> EditSubjectCommand  { get; }
+
 	public ReactiveCommand<SubjectItemViewModel, Task> DeleteSubjectCommand { get; }
 
-	// Plan commands
 	public ReactiveCommand<Unit, Unit>             AddPlanCommand    { get; }
+
 	public ReactiveCommand<Unit, Unit>             CancelPlanCommand { get; }
+
 	public ReactiveCommand<Unit, Task>             SavePlanCommand   { get; }
+
 	public ReactiveCommand<PlanItemViewModel, Unit> EditPlanCommand  { get; }
+
 	public ReactiveCommand<PlanItemViewModel, Task> DeletePlanCommand { get; }
 
 	#endregion
@@ -200,8 +210,6 @@ internal class CurriculumPageViewModel : ReactiveObject, IWorkSpacePage
 				break;
 		}
 	}
-
-	// ---- Subject form ----
 
 	private void OpenAddSubject()
 	{
@@ -269,8 +277,6 @@ internal class CurriculumPageViewModel : ReactiveObject, IWorkSpacePage
 		catch(Exception) { }
 	}
 
-	// ---- Plan form ----
-
 	private void OpenAddPlan()
 	{
 		PlanForm.Reset();
@@ -334,8 +340,6 @@ internal class CurriculumPageViewModel : ReactiveObject, IWorkSpacePage
 		}
 		catch(Exception) { }
 	}
-
-	// ---- Data loading ----
 
 	private async Task LoadSubjects()
 	{

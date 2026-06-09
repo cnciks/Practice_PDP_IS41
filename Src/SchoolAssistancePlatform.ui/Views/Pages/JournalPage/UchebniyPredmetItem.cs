@@ -1,4 +1,4 @@
-using SchoolAssistancePlatform.framework.Data;
+﻿using SchoolAssistancePlatform.framework.Data;
 
 namespace SchoolAssistancePlatform.UI.Views.Pages.JournalPage;
 

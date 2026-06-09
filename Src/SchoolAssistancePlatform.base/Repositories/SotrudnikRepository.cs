@@ -107,6 +107,8 @@ public sealed class SotrudnikRepository(SAPDbContext context, IMapper mapper) : 
 
 		_mapper.Map(dto, existing);
 
+		existing.SotrudnikID = id;
+
 		_context.Sotrudniki.Update(existing);
 		await _context.SaveChangesAsync();
 

@@ -1,4 +1,4 @@
-using ReactiveUI;
+﻿using ReactiveUI;
 
 using SchoolAssistancePlatform.framework;
 
@@ -9,7 +9,8 @@ internal sealed class PermissionItemViewModel : ReactiveObject
 	private bool _isChecked;
 
 	public Permissions Permission { get; init; }
-	public string      Label      { get; init; } = string.Empty;
+
+	public string Label { get; init; } = string.Empty;
 
 	public bool IsChecked
 	{
@@ -20,7 +21,7 @@ internal sealed class PermissionItemViewModel : ReactiveObject
 	public static PermissionItemViewModel FromPermission(Permissions p, bool isChecked = false) => new()
 	{
 		Permission = p,
-		Label      = p switch
+		Label = p switch
 		{
 			Permissions.MainPage           => "Главная страница",
 			Permissions.AdministrationPage => "Администрирование",

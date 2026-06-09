@@ -37,11 +37,15 @@ internal class StudentsPageViewModel : ReactiveObject, IWorkSpacePage
 	#region Properties
 
 	public string  Title      => "Ученики";
+
 	public Bitmap? Icon       => MenuIcon.Load("avares://SchoolAssistancePlatform.ui/Assets/Images/students.png");
+
 	public Permissions Permission => Permissions.StudentsPage;
 
 	public AvaloniaList<StudentViewModel> Students { get; } = [];
+
 	public AvaloniaList<KlassItem>        Klasses  { get; } = [];
+
 	public StudentFormViewModel           Form     { get; } = new();
 
 	public string SearchText

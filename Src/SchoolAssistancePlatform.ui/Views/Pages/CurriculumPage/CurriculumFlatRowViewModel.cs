@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SchoolAssistancePlatform.UI.Views.Pages.CurriculumPage;
 
@@ -8,9 +8,11 @@ namespace SchoolAssistancePlatform.UI.Views.Pages.CurriculumPage;
 /// </summary>
 internal sealed class CurriculumFlatRowViewModel
 {
-	public string Subject   { get; init; } = string.Empty;
-	public string Abbr      { get; init; } = string.Empty;
-	public int    NormHours { get; init; }
+	public string Subject { get; init; } = string.Empty;
+
+	public string Abbr { get; init; } = string.Empty;
+
+	public int NormHours { get; init; }
 
 	public List<CurriculumCellViewModel> Cells { get; init; } = [];
 }
