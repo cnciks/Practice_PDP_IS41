@@ -28,6 +28,7 @@ internal class WorkSpaceViewModel : ReactiveObject
 
 	private IReadOnlyList<MenuItem> _menuItems;
 	private string _workSpaceOwnerName;
+	private bool   _isUserMenuOpen;
 
 	#endregion
 
@@ -47,7 +48,15 @@ internal class WorkSpaceViewModel : ReactiveObject
 		set => this.RaiseAndSetIfChanged(ref _selectedMenuItem, value);
 	}
 
+	public bool IsUserMenuOpen
+	{
+		get => _isUserMenuOpen;
+		set => this.RaiseAndSetIfChanged(ref _isUserMenuOpen, value);
+	}
+
 	public ReactiveCommand<Unit, Unit> ChangeThemeCommand { get; }
+	public ReactiveCommand<Unit, Unit> ToggleUserMenuCommand { get; }
+	public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
 
 	#endregion
 
@@ -101,13 +110,19 @@ internal class WorkSpaceViewModel : ReactiveObject
 
 		PropertyChanged += (_, p) =>
 		{
-			if(p.PropertyName == nameof(SelectedMenuItem))
+			if(p.PropertyName == nameof(SelectedMenuItem) && SelectedMenuItem != null)
 			{
 				Dispatcher.UIThread.Invoke(() => SelectedMenuItem.Page.LoadPageAsync());
 			}
 		};
 
-		ChangeThemeCommand = ReactiveCommand.Create(ChangeTheme);
+		ChangeThemeCommand    = ReactiveCommand.Create(ChangeTheme);
+		ToggleUserMenuCommand = ReactiveCommand.Create(() => { IsUserMenuOpen = !IsUserMenuOpen; });
+		LogoutCommand         = ReactiveCommand.Create(() =>
+		{
+			IsUserMenuOpen = false;
+			_accountService.Logout();
+		});
 	}
 
 	private void ChangeTheme()

@@ -2,214 +2,166 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SchoolAssistancePlatform.UI.CurriculumPageView">
-    <Grid RowDefinitions="Auto, *"
-          Margin="20">
+             xmlns:vm="clr-namespace:SchoolAssistancePlatform.UI.Views.Pages.CurriculumPage"
+             xmlns:dto="clr-namespace:SchoolAssistancePlatform.framework.Data;assembly=SchoolAssistancePlatform.framework"
+             mc:Ignorable="d"
+             x:Class="SchoolAssistancePlatform.UI.Views.Pages.CurriculumPage.CurriculumPageView"
+             x:DataType="vm:CurriculumPageViewModel">
 
-		<Grid ColumnDefinitions="*, Auto"
-			  Margin="0 0 0 20">
+    <Grid RowDefinitions="Auto, *" Margin="20">
 
-			<Border BorderThickness="1"
-					BorderBrush="#CCCCCC"
-					Margin="0 0 20 0"
-					CornerRadius="3">
-                <Grid VerticalAlignment="Center"
-                      ColumnDefinitions="*, Auto">                    
-				    <StackPanel VerticalAlignment="Center"
-				    			Orientation="Horizontal"
-				    			Margin="20 0">
-				    	<ComboBox PlaceholderText="Класс"
-				    			  Width="180"
-				    			  Margin="0 0 20 0"/>
-				    	<ComboBox PlaceholderText="Учебный год"
-				    			  Width="180"/>
-				    </StackPanel>
-
-                    
-				    <ToggleButton x:Name="notification"
-				    			  Background="Transparent"
-                                  IsChecked="{Binding ApplyFilter}"
-				    			  Grid.Column="1">
-				    	<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/filter.png"
-				    		Width="32" Height="32"
-				    		Margin="10"/>
-				    </ToggleButton>
-
-                </Grid>
-			</Border>
-
-			<Button HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"
-					Background="Transparent"
-					BorderThickness="1"
-					BorderBrush="#CCCCCC"
-					Grid.Column="1"
-					Command="{Binding EditCurriculumCommand}">
-			
-				<Grid ColumnDefinitions="Auto, *"
-					  HorizontalAlignment="Stretch"
-					  Margin="10 0">
-			
-					 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/edit.png"
-							Width="32" Height="32"
-							HorizontalAlignment="Center"
-							Margin="10"/>
-			
-					<TextBlock Text="Редактировать"
-							   FontWeight="Bold"
-							   Grid.Column="1"
-							   VerticalAlignment="Center"/>
-				</Grid>
-			
-			</Button>
-		</Grid>
-
-    <DockPanel Grid.Row="1">
-
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Border Grid.Column="0"
-                    BorderBrush="#BDC3C7"
+        <!-- Вкладки -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="4" Margin="0,0,0,16">
+            <Button Command="{Binding ShowMatrixCommand}"
+                    Padding="16,8" CornerRadius="8"
                     BorderThickness="1"
-                    CornerRadius="8"
-                    Background="White"
-                    BoxShadow="0 2 4 rgba(0,0,0,0.1)">
-                
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> 
-                        <RowDefinition Height="*"/> 
-                    </Grid.RowDefinitions>
+                    Background="{Binding IsMatrixTab, Converter={x:Static vm:TabColorConverter.Instance}}"
+                    BorderBrush="#DDDDDD">
+                <TextBlock Text="📊 Матрица часов" FontSize="13" FontWeight="SemiBold"
+                           Foreground="{Binding IsMatrixTab, Converter={x:Static vm:TabFgConverter.Instance}}"/>
+            </Button>
+            <Button Command="{Binding ShowSubjectsCommand}"
+                    Padding="16,8" CornerRadius="8"
+                    BorderThickness="1"
+                    Background="{Binding IsSubjectsTab, Converter={x:Static vm:TabColorConverter.Instance}}"
+                    BorderBrush="#DDDDDD">
+                <TextBlock Text="📚 Предметы" FontSize="13" FontWeight="SemiBold"
+                           Foreground="{Binding IsSubjectsTab, Converter={x:Static vm:TabFgConverter.Instance}}"/>
+            </Button>
+            <Button Command="{Binding ShowPlansCommand}"
+                    Padding="16,8" CornerRadius="8"
+                    BorderThickness="1"
+                    Background="{Binding IsPlansTab, Converter={x:Static vm:TabColorConverter.Instance}}"
+                    BorderBrush="#DDDDDD">
+                <TextBlock Text="📋 Планы" FontSize="13" FontWeight="SemiBold"
+                           Foreground="{Binding IsPlansTab, Converter={x:Static vm:TabFgConverter.Instance}}"/>
+            </Button>
+        </StackPanel>
 
+        <!-- ===== МАТРИЦА ===== -->
+        <Grid Grid.Row="1" IsVisible="{Binding IsMatrixTab}" RowDefinitions="Auto, *">
 
-                    <Border Grid.Row="0" 
-                            Background="#34495E"
-                            CornerRadius="8,8,0,0">
-                        <Grid Margin="10">
+            <!-- Фильтры матрицы -->
+            <Border Grid.Row="0" BorderThickness="1" BorderBrush="#DDDDDD"
+                    CornerRadius="8" Background="White" Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal" Margin="12,6" Spacing="12" VerticalAlignment="Center">
+                    <ComboBox PlaceholderText="Фильтр по плану"
+                              Width="220"
+                              ItemsSource="{Binding FilterPlans}"
+                              SelectedItem="{Binding FilterPlan}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="dto:UchebniyPlanDto">
+                                <TextBlock Text="{Binding Nazvanie}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox PlaceholderText="Фильтр по классу"
+                              Width="180"
+                              ItemsSource="{Binding FilterKlasses}"
+                              SelectedItem="{Binding FilterKlass}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="dto:KlassDto">
+                                <TextBlock Text="{Binding NomerKlassa}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+
+            <!-- Таблица матрицы -->
+            <Border Grid.Row="1" BorderBrush="#BDC3C7" BorderThickness="1" CornerRadius="8" Background="White">
+                <Grid RowDefinitions="Auto, *">
+                    <Border Grid.Row="0" Background="#34495E" CornerRadius="8,8,0,0">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="70"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="500"/>
+                                <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
-                            
-                            <TextBlock Grid.Column="0" 
-                                       Text="📖 Предмет" 
-                                       FontWeight="Bold"
-                                       Foreground="White"
-                                       FontSize="14"
-                                       HorizontalAlignment="Left"/>
-                            
-                            <TextBlock Grid.Column="1"
-                                       FontWeight="Bold"
-                                       Foreground="White"
-                                       FontSize="14"
-                                       HorizontalAlignment="Center"/>
-                            
-                            <TextBlock Grid.Column="2"
-                                       FontWeight="Bold"
-                                       Foreground="White"
-                                       FontSize="14"
-                                       HorizontalAlignment="Center"/>
-                            
-                            <TextBlock Grid.Column="3" 
-                                       Text="Норма ФГОС (мин-макс)" 
-                                       FontWeight="Bold"
-                                       Foreground="White"
-                                       FontSize="13"
-                                       HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="📖 Предмет"
+                                       FontWeight="Bold" Foreground="White" FontSize="13"
+                                       Margin="15,10" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="Норма"
+                                       FontWeight="Bold" Foreground="#AAB7C4" FontSize="11"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ItemsControl Grid.Column="2" ItemsSource="{Binding Headers}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="x:String">
+                                        <Border Width="90" BorderBrush="#4A6278" BorderThickness="1,0,0,0">
+                                            <TextBlock Text="{Binding}"
+                                                       FontWeight="Bold" Foreground="White" FontSize="13"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       Padding="8,10"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Grid.Column="3" Text="Аббр."
+                                       FontWeight="Bold" Foreground="#AAB7C4" FontSize="11"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                     </Border>
-
                     <ScrollViewer Grid.Row="1">
-                        <ListBox ItemsSource="{Binding StudyPlanItems}"
-                                 BorderThickness="0"
-                                 Background="Transparent">
-                            
+                        <ListBox ItemsSource="{Binding Rows}" BorderThickness="0" Background="Transparent">
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                            </ListBox.Styles>
                             <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="#ECF0F1" 
-                                            BorderThickness="0,0,0,1">
-                                        
-                                        <Button Command="{Binding $parent[ListBox].DataContext.SelectSubjectCommand}"
-                                                CommandParameter="{Binding}"
-                                                BorderThickness="0"
-                                                Background="Transparent"
-                                                HorizontalContentAlignment="Stretch"
-                                                Padding="0">
-                                            
-                                            <Button.Styles>
-                                                <Style Selector="Button:pointerover">
-                                                    <Setter Property="Background" Value="#F0F3F4"/>
-                                                </Style>
-                                            </Button.Styles>
-                                            
-                                            <Grid Margin="10 8">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="100"/>
-                                                    <ColumnDefinition Width="100"/>
-                                                    <ColumnDefinition Width="130"/>
-                                                </Grid.ColumnDefinitions>
-                                                
-                                                <TextBlock Grid.Column="0" 
-                                                           Text="{Binding Subject}"
-                                                           FontSize="13"
-                                                           VerticalAlignment="Center">
-                                                    <TextBlock.Styles>
-                                                        <Style Selector="TextBlock">
-                                                            <Setter Property="FontWeight" Value="{Binding IsTotal}"/>
-                                                        </Style>
-                                                    </TextBlock.Styles>
-                                                </TextBlock>
-                                                
-                                                <Border Grid.Column="1"
-                                                        Background="{Binding Class5A}"
-                                                        CornerRadius="4"
-                                                        Margin="5,0"
-                                                        Padding="8,4">
-                                                    <TextBlock Text="{Binding Class5A}"
-                                                               HorizontalAlignment="Center"
-                                                               FontWeight="Bold"
-                                                               FontSize="13">
-                                                        <TextBlock.Styles>
-                                                            <Style Selector="TextBlock">
-                                                                <Setter Property="Foreground" Value="{Binding Class5A}"/>
-                                                            </Style>
-                                                        </TextBlock.Styles>
-                                                    </TextBlock>
-                                                </Border>
-                                                
-                                                <Border Grid.Column="2"
-                                                        Background="{Binding Class5B}"
-                                                        CornerRadius="4"
-                                                        Margin="5,0"
-                                                        Padding="8,4">
-                                                    <TextBlock Text="{Binding Class5B}"
-                                                               HorizontalAlignment="Center"
-                                                               FontWeight="Bold"
-                                                               FontSize="13">
-                                                        <TextBlock.Styles>
-                                                            <Style Selector="TextBlock">
-                                                                <Setter Property="Foreground" Value="{Binding Class5B}"/>
-                                                            </Style>
-                                                        </TextBlock.Styles>
-                                                    </TextBlock>
-                                                </Border>
-                                                
-                                                <TextBlock Grid.Column="3"
-                                                           Text="{Binding NormMinMax}"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"
-                                                           FontSize="12"
-                                                           Foreground="#7F8C8D"/>
-                                            </Grid>
-                                        </Button>
+                                <DataTemplate x:DataType="vm:CurriculumFlatRowViewModel">
+                                    <Border BorderBrush="#ECF0F1" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="70"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="100"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Subject}"
+                                                       FontSize="13" VerticalAlignment="Center" Margin="15,8"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding NormHours}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       FontSize="12" Foreground="#7F8C8D"/>
+                                            <ItemsControl Grid.Column="2" ItemsSource="{Binding Cells}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:CurriculumCellViewModel">
+                                                        <Border Width="90" BorderBrush="#ECF0F1"
+                                                                BorderThickness="1,0,0,0" Padding="8,6">
+                                                            <TextBlock Text="{Binding Text}"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       FontWeight="Bold" FontSize="13"
+                                                                       Foreground="{Binding ForegroundColor}"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <TextBlock Grid.Column="3" Text="{Binding Abbr}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       FontSize="11" Foreground="#95A5A6"/>
+                                        </Grid>
                                     </Border>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -218,6 +170,310 @@
                 </Grid>
             </Border>
         </Grid>
-    </DockPanel>
+
+        <!-- ===== ПРЕДМЕТЫ ===== -->
+        <Grid Grid.Row="1" IsVisible="{Binding IsSubjectsTab}" ColumnDefinitions="*, Auto">
+
+            <Grid Grid.Column="0" RowDefinitions="Auto, *" Margin="0,0,8,0">
+                <!-- Кнопка добавить -->
+                <Button Grid.Row="0" Command="{Binding AddSubjectCommand}"
+                        Background="#3498DB" Foreground="White"
+                        BorderThickness="0" CornerRadius="8" Padding="16,9"
+                        HorizontalAlignment="Left" Margin="0,0,0,12">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="+" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="Добавить предмет" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Список предметов -->
+                <Border Grid.Row="1" BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="8" Background="White">
+                    <Grid RowDefinitions="Auto, *">
+                        <!-- Заголовок таблицы -->
+                        <Border Grid.Row="0" Background="#F5F5F5" BorderBrush="#DDDDDD" BorderThickness="0,0,0,1"
+                                CornerRadius="8,8,0,0">
+                            <Grid ColumnDefinitions="*, 80, 60, 60, 60">
+                                <TextBlock Grid.Column="0" Text="Название" FontWeight="Bold" FontSize="12"
+                                           Foreground="#555" Margin="14,10"/>
+                                <TextBlock Grid.Column="1" Text="Аббр." FontWeight="Bold" FontSize="12"
+                                           Foreground="#555" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="Ч/нед" FontWeight="Bold" FontSize="12"
+                                           Foreground="#555" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="3" FontSize="12" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="4" FontSize="12" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ScrollViewer Grid.Row="1">
+                            <ListBox ItemsSource="{Binding Subjects}" BorderThickness="0" Background="Transparent">
+                                <ListBox.Styles>
+                                    <Style Selector="ListBoxItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="#F8F9FA"/>
+                                    </Style>
+                                </ListBox.Styles>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:SubjectItemViewModel">
+                                        <Border BorderBrush="#EEEEEE" BorderThickness="0,0,0,1" Padding="0,2">
+                                            <Grid ColumnDefinitions="*, 80, 60, 60, 60">
+                                                <TextBlock Grid.Column="0" Text="{Binding Nazvanie}"
+                                                           FontSize="13" VerticalAlignment="Center" Margin="14,8"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Sokrashenie}"
+                                                           FontSize="12" Foreground="#888"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding ChasovNedelyu}"
+                                                           FontSize="12" Foreground="#555"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <Button Grid.Column="3"
+                                                        Command="{Binding $parent[ItemsControl].((vm:CurriculumPageViewModel)DataContext).EditSubjectCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent" BorderThickness="0"
+                                                        Padding="8,6" HorizontalAlignment="Center">
+                                                    <TextBlock Text="✏" FontSize="13" Foreground="#3498DB"/>
+                                                </Button>
+                                                <Button Grid.Column="4"
+                                                        Command="{Binding $parent[ItemsControl].((vm:CurriculumPageViewModel)DataContext).DeleteSubjectCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent" BorderThickness="0"
+                                                        Padding="8,6" HorizontalAlignment="Center">
+                                                    <TextBlock Text="🗑" FontSize="13" Foreground="#E74C3C"/>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Боковая панель предмета -->
+            <Border Grid.Column="1"
+                    IsVisible="{Binding IsSubjectFormVisible}"
+                    Width="300"
+                    Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="10">
+                <StackPanel Spacing="0">
+                    <Border Background="#F8F9FA" BorderBrush="#EEEEEE" BorderThickness="0,0,0,1"
+                            CornerRadius="10,10,0,0" Padding="16,14">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Text="{Binding SubjectFormTitle}" FontWeight="Bold"
+                                       FontSize="15" Foreground="#2C3E50" VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" Command="{Binding CancelSubjectCommand}"
+                                    Background="Transparent" BorderThickness="0" Padding="4">
+                                <TextBlock Text="✕" FontSize="14" Foreground="#888"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <StackPanel Spacing="12" Margin="16">
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Название *" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <TextBox Text="{Binding SubjectForm.Nazvanie}"
+                                     PlaceholderText="например: Математика"
+                                     Padding="10,8" FontSize="13"
+                                     BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Аббревиатура" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <TextBox Text="{Binding SubjectForm.Sokrashenie}"
+                                     PlaceholderText="например: Мат"
+                                     Padding="10,8" FontSize="13"
+                                     BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Часов в неделю" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <NumericUpDown Value="{Binding SubjectForm.ChasovNedelyu}"
+                                           Minimum="1" Maximum="40"
+                                           Increment="1" FormatString="0"
+                                           HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <Border Background="#FDEDEC" CornerRadius="6" Padding="10,8"
+                                IsVisible="{Binding SubjectFormError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                            <TextBlock Text="{Binding SubjectFormError}" Foreground="#E74C3C"
+                                       FontSize="12" TextWrapping="Wrap"/>
+                        </Border>
+
+                        <Grid ColumnDefinitions="*, *" Margin="0,4,0,16">
+                            <Button Grid.Column="0" Command="{Binding CancelSubjectCommand}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                    Background="Transparent" BorderThickness="1" BorderBrush="#CCCCCC"
+                                    CornerRadius="6" Padding="0,9" Margin="0,0,4,0">
+                                <TextBlock Text="Отмена" FontSize="13" Foreground="#666"/>
+                            </Button>
+                            <Button Grid.Column="1" Command="{Binding SaveSubjectCommand}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                    Background="#3498DB" BorderThickness="0"
+                                    CornerRadius="6" Padding="0,9" Margin="4,0,0,0">
+                                <TextBlock Text="Сохранить" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                            </Button>
+                        </Grid>
+
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+
+        <!-- ===== ПЛАНЫ ===== -->
+        <Grid Grid.Row="1" IsVisible="{Binding IsPlansTab}" ColumnDefinitions="*, Auto">
+
+            <Grid Grid.Column="0" RowDefinitions="Auto, *" Margin="0,0,8,0">
+                <!-- Кнопка добавить -->
+                <Button Grid.Row="0" Command="{Binding AddPlanCommand}"
+                        Background="#3498DB" Foreground="White"
+                        BorderThickness="0" CornerRadius="8" Padding="16,9"
+                        HorizontalAlignment="Left" Margin="0,0,0,12">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="+" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="Добавить план" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Список планов -->
+                <Border Grid.Row="1" BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="8" Background="White">
+                    <Grid RowDefinitions="Auto, *">
+                        <Border Grid.Row="0" Background="#F5F5F5" BorderBrush="#DDDDDD" BorderThickness="0,0,0,1"
+                                CornerRadius="8,8,0,0">
+                            <Grid ColumnDefinitions="*, 80, 60, 60">
+                                <TextBlock Grid.Column="0" Text="Название" FontWeight="Bold" FontSize="12"
+                                           Foreground="#555" Margin="14,10"/>
+                                <TextBlock Grid.Column="1" Text="Год" FontWeight="Bold" FontSize="12"
+                                           Foreground="#555" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="3" FontSize="12" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ScrollViewer Grid.Row="1">
+                            <ListBox ItemsSource="{Binding Plans}" BorderThickness="0" Background="Transparent">
+                                <ListBox.Styles>
+                                    <Style Selector="ListBoxItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="#F8F9FA"/>
+                                    </Style>
+                                </ListBox.Styles>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:PlanItemViewModel">
+                                        <Border BorderBrush="#EEEEEE" BorderThickness="0,0,0,1" Padding="0,2">
+                                            <Grid ColumnDefinitions="*, 80, 60, 60">
+                                                <StackPanel Grid.Column="0" Margin="14,8" Spacing="2">
+                                                    <TextBlock Text="{Binding Nazvanie}" FontSize="13" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding Opisanie}" FontSize="11"
+                                                               Foreground="#888" TextWrapping="Wrap"
+                                                               IsVisible="{Binding Opisanie, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" Text="{Binding GodNachala}"
+                                                           FontSize="12" Foreground="#888"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <Button Grid.Column="2"
+                                                        Command="{Binding $parent[ItemsControl].((vm:CurriculumPageViewModel)DataContext).EditPlanCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent" BorderThickness="0"
+                                                        Padding="8,6" HorizontalAlignment="Center">
+                                                    <TextBlock Text="✏" FontSize="13" Foreground="#3498DB"/>
+                                                </Button>
+                                                <Button Grid.Column="3"
+                                                        Command="{Binding $parent[ItemsControl].((vm:CurriculumPageViewModel)DataContext).DeletePlanCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent" BorderThickness="0"
+                                                        Padding="8,6" HorizontalAlignment="Center">
+                                                    <TextBlock Text="🗑" FontSize="13" Foreground="#E74C3C"/>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Боковая панель плана -->
+            <Border Grid.Column="1"
+                    IsVisible="{Binding IsPlanFormVisible}"
+                    Width="300"
+                    Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="10">
+                <StackPanel Spacing="0">
+                    <Border Background="#F8F9FA" BorderBrush="#EEEEEE" BorderThickness="0,0,0,1"
+                            CornerRadius="10,10,0,0" Padding="16,14">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Text="{Binding PlanFormTitle}" FontWeight="Bold"
+                                       FontSize="15" Foreground="#2C3E50" VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" Command="{Binding CancelPlanCommand}"
+                                    Background="Transparent" BorderThickness="0" Padding="4">
+                                <TextBlock Text="✕" FontSize="14" Foreground="#888"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <StackPanel Spacing="12" Margin="16">
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Название *" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <TextBox Text="{Binding PlanForm.Nazvanie}"
+                                     PlaceholderText="например: Основная программа"
+                                     Padding="10,8" FontSize="13"
+                                     BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Год начала" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <NumericUpDown Value="{Binding PlanForm.GodNachala}"
+                                           Minimum="2000" Maximum="2100"
+                                           Increment="1" FormatString="0"
+                                           HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Описание" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <TextBox Text="{Binding PlanForm.Opisanie}"
+                                     PlaceholderText="Краткое описание..."
+                                     Padding="10,8" FontSize="13"
+                                     MinHeight="70" AcceptsReturn="True"
+                                     TextWrapping="Wrap"
+                                     BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                        </StackPanel>
+
+                        <Border Background="#FDEDEC" CornerRadius="6" Padding="10,8"
+                                IsVisible="{Binding PlanFormError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                            <TextBlock Text="{Binding PlanFormError}" Foreground="#E74C3C"
+                                       FontSize="12" TextWrapping="Wrap"/>
+                        </Border>
+
+                        <Grid ColumnDefinitions="*, *" Margin="0,4,0,16">
+                            <Button Grid.Column="0" Command="{Binding CancelPlanCommand}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                    Background="Transparent" BorderThickness="1" BorderBrush="#CCCCCC"
+                                    CornerRadius="6" Padding="0,9" Margin="0,0,4,0">
+                                <TextBlock Text="Отмена" FontSize="13" Foreground="#666"/>
+                            </Button>
+                            <Button Grid.Column="1" Command="{Binding SavePlanCommand}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                    Background="#3498DB" BorderThickness="0"
+                                    CornerRadius="6" Padding="0,9" Margin="4,0,0,0">
+                                <TextBlock Text="Сохранить" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                            </Button>
+                        </Grid>
+
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+
     </Grid>
 </UserControl>

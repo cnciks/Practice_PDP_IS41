@@ -2,360 +2,266 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:SchoolAssistancePlatform.UI.Views.Pages.MainPage"
+             mc:Ignorable="d"
+             x:Class="SchoolAssistancePlatform.UI.Views.Pages.MainPage.MainPageView"
+             x:DataType="vm:MainPageViewModel">
 
-             mc:Ignorable="d" d:DesignWidth="800" 
+    <ScrollViewer>
+    <Grid Margin="24" RowDefinitions="Auto, Auto, Auto, *">
 
-             x:Class="SchoolAssistancePlatform.UI.MainPageView">
-
-    <Grid Margin="20"
-          RowDefinitions="Auto, Auto, *, Auto">
-
-        <Grid ColumnDefinitions="*, Auto"
-              Margin="0 0 0 20">
-
-            <TextBlock FontWeight="Bold"
-                       FontSize="16"
-                       VerticalAlignment="Center">
-                <Run Text="{Binding Greeting}"/>
-                <Run Text=", "/>
-                <Run Text="!"/>
-            </TextBlock>
-
-            <StackPanel Grid.Column="1"
-                        Orientation="Horizontal">
-            	<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/calendar.png"
-						Width="32" Height="32"
-						Margin="10"/>
-                <TextBlock FontWeight="Bold"
-                           FontSize="16"
-                           VerticalAlignment="Center">
-                    <Run Text="{Binding CurrentDate}"/>
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0 0 0 20">
+            <StackPanel VerticalAlignment="Center" Spacing="2">
+                <TextBlock FontSize="22" FontWeight="Bold" Foreground="#2C3E50">
+                    <Run Text="{Binding Greeting}"/>
+                    <Run Text="!"/>
                 </TextBlock>
+                <TextBlock FontSize="13" Foreground="#888" Text="Добро пожаловать в систему управления школой"/>
             </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/calendar.png"
+                       Width="24" Height="24"/>
+                <TextBlock Text="{Binding CurrentDate}" FontSize="14" FontWeight="SemiBold"
+                           Foreground="#555" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*, *, *" Margin="0 0 0 20">
+
+            <Button Grid.Column="0"
+                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                    Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="10" Margin="0 0 8 0"
+                    Command="{Binding OpenMenuByNameCommand}" CommandParameter="Ученики">
+                <Grid ColumnDefinitions="Auto, *" Margin="16,14">
+                    <Border Background="#EBF5FB" CornerRadius="10" Width="46" Height="46"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/students.png"
+                               Width="26" Height="26"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,0,0" Spacing="2">
+                        <TextBlock Text="{Binding StudentsCount}" FontSize="26" FontWeight="Bold"
+                                   Foreground="#2980B9"/>
+                        <TextBlock Text="Учеников" FontSize="12" Foreground="#888"/>
+                    </StackPanel>
+                </Grid>
+            </Button>
+
+            <Button Grid.Column="1"
+                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                    Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="10" Margin="4 0"
+                    Command="{Binding OpenMenuByNameCommand}" CommandParameter="Сотрудники">
+                <Grid ColumnDefinitions="Auto, *" Margin="16,14">
+                    <Border Background="#F5EEF8" CornerRadius="10" Width="46" Height="46"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/presentation.png"
+                               Width="26" Height="26"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,0,0" Spacing="2">
+                        <TextBlock Text="{Binding EmployeesCount}" FontSize="26" FontWeight="Bold"
+                                   Foreground="#8E44AD"/>
+                        <TextBlock Text="Сотрудников" FontSize="12" Foreground="#888"/>
+                    </StackPanel>
+                </Grid>
+            </Button>
+
+            <Button Grid.Column="2"
+                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                    Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="10" Margin="8 0 0 0"
+                    Command="{Binding OpenMenuByNameCommand}" CommandParameter="Классы">
+                <Grid ColumnDefinitions="Auto, *" Margin="16,14">
+                    <Border Background="#EAFAF1" CornerRadius="10" Width="46" Height="46"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/blackboard.png"
+                               Width="26" Height="26"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,0,0" Spacing="2">
+                        <TextBlock Text="{Binding ClassesCount}" FontSize="26" FontWeight="Bold"
+                                   Foreground="#27AE60"/>
+                        <TextBlock Text="Классов" FontSize="12" Foreground="#888"/>
+                    </StackPanel>
+                </Grid>
+            </Button>
 
         </Grid>
 
-        <UniformGrid Rows="1"
-                     Grid.Row="1"
-                     Margin="0 0 0 20">
+        <!-- Средний ряд: сообщения + средний балл -->
+        <Grid Grid.Row="2" ColumnDefinitions="*, *" Margin="0 0 0 20">
 
-            <Button HorizontalAlignment="Stretch"
-                    Background="Transparent"
-                    BorderThickness="1"
-                    BorderBrush="{DynamicResource BorderBrushColor}"
-                    CornerRadius="0"
-                    Command="{Binding OpenMenuByNameCommand}"
-                    CommandParameter="Ученики">
+            <!-- Карточка сообщений -->
+            <Border Grid.Column="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="10" Margin="0 0 8 0">
+                <StackPanel Spacing="0">
 
-                <StackPanel Orientation="Horizontal">
+                    <!-- Шапка -->
+                    <Border Background="#F8F9FA" CornerRadius="10,10,0,0"
+                            BorderBrush="#E8ECF0" BorderThickness="0,0,0,1" Padding="16,12">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/open-email.png"
+                                   Width="20" Height="20" VerticalAlignment="Center"/>
+                            <TextBlock Text="Сообщения" FontWeight="Bold" FontSize="14"
+                                       VerticalAlignment="Center" Foreground="#2C3E50"/>
+                        </StackPanel>
+                    </Border>
 
-            	    <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/students.png"
-						   Width="32" Height="32"
-						   Margin="10"/>
-
-                    <TextBlock FontWeight="Bold"
-                               FontSize="16"
-                               VerticalAlignment="Center">
-                        <Run Text="{Binding StudentsCount}"/>
-                        <Run Text=" Учеников"/>
-                    </TextBlock>
-                    
-                </StackPanel>
-
-            </Button>
-
-            <Button HorizontalAlignment="Stretch"
-                    Background="Transparent"
-                    BorderThickness="1"
-                    BorderBrush="{DynamicResource BorderBrushColor}"
-                    Margin="-1 0"
-                    CornerRadius="0"
-                    Command="{Binding OpenMenuByNameCommand}"
-                    CommandParameter="Сотрудники">
-
-                <StackPanel Orientation="Horizontal">
-
-            	    <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/presentation.png"
-						   Width="32" Height="32"
-						   Margin="10"/>
-
-                    <TextBlock FontWeight="Bold"
-                               FontSize="16"
-                               VerticalAlignment="Center">
-                        <Run Text="{Binding EmployeesCount}"/>
-                        <Run Text=" Сотрудников"/>
-                    </TextBlock>
-                    
-                </StackPanel>
-
-            </Button>
-
-            <Button HorizontalAlignment="Stretch"
-                    Background="Transparent"
-                    BorderThickness="1"
-                    Margin="0 0"
-                    BorderBrush="{DynamicResource BorderBrushColor}"
-                    CornerRadius="0"
-                    Command="{Binding OpenMenuByNameCommand}"
-                    CommandParameter="Классы">
-
-                <StackPanel Orientation="Horizontal">
-
-            	    <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/blackboard.png"
-						   Width="32" Height="32"
-						   Margin="10"/>
-
-                    <TextBlock FontWeight="Bold"
-                               FontSize="16"
-                               VerticalAlignment="Center">
-                        <Run Text="{Binding ClassesCount}"/>
-                        <Run Text=" Классов"/>
-                    </TextBlock>
-                    
-                </StackPanel>
-
-            </Button>
-
-        </UniformGrid>
-
-        <UniformGrid Rows="3"
-                     Columns="2"
-                     Grid.Row="2"
-                     Margin="0 0 0 20">
-
-            <Grid Margin="10 0 5 5"
-                  RowDefinitions="Auto, Auto">
-
-                <Border CornerRadius="5 5 0 0"
-                        BorderBrush="{DynamicResource BorderBrushColor}"
-                        BorderThickness="1 1 1 0"
-                        VerticalAlignment="Top"
-                        Padding="">
-
-                    <StackPanel Orientation="Horizontal">
-
-                           <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/open-email.png"
-						          Width="32" Height="32"
-						          Margin="10"/>
-
-                            <TextBlock FontWeight="Bold"
-                                       FontSize="16"
-                                       VerticalAlignment="Center">
-                                <Run Text="Сообщения"/>
-                            </TextBlock>
-
-                    </StackPanel>
-                </Border>
-
-                <Border CornerRadius="0 0 5 5"
-                        BorderBrush="{DynamicResource BorderBrushColor}"
-                        BorderThickness="1"
-                        VerticalAlignment="Top"
-                        Margin="0 -1 0 0"
-                        Grid.Row="1">
-
-                    <StackPanel Orientation="Vertical">
-
-                        <Grid ColumnDefinitions="*, Auto"
-                              Margin="20 5">
-
-                            <StackPanel Orientation="Horizontal">
-                                 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/open-email.png"
-						                Width="16" Height="16"
-						                Margin="10"/>
-
-                                 <TextBlock FontWeight="Bold"
-                                            FontSize="16"
-                                            VerticalAlignment="Center">
-                                     <Run Text="Входящие"/>
-                                 </TextBlock>
+                    <!-- Статистика -->
+                    <Grid ColumnDefinitions="*, *" Margin="16,14,16,0">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock Text="Входящие" FontSize="12" Foreground="#999"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="{Binding InboxCount}" FontSize="24"
+                                           FontWeight="Bold" Foreground="#2C3E50"/>
+                                <Border Background="#3498DB" CornerRadius="10" Padding="8,2"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding UnreadCount, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                    <TextBlock Text="{Binding UnreadCount}" FontSize="11"
+                                               FontWeight="Bold" Foreground="White"/>
+                                </Border>
                             </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="4">
+                            <TextBlock Text="Непрочитанных" FontSize="12" Foreground="#999"/>
+                            <TextBlock Text="{Binding UnreadCount}" FontSize="24"
+                                       FontWeight="Bold" Foreground="#E74C3C"/>
+                        </StackPanel>
+                    </Grid>
 
-                            <TextBlock Grid.Column="1"
-                                       FontWeight="Black"
-                                       FontSize="18"
-                                       VerticalAlignment="Center"
-                                       Text="23"/>
-
+                    <!-- Кнопка перехода -->
+                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                            Background="Transparent" BorderThickness="1" BorderBrush="#E8ECF0"
+                            CornerRadius="6" Margin="12,12"
+                            Command="{Binding OpenMenuByNameCommand}" CommandParameter="Сообщения">
+                        <Grid ColumnDefinitions="*, Auto" Margin="4,0">
+                            <TextBlock Text="Перейти к сообщениям" FontSize="12" FontWeight="SemiBold"
+                                       Foreground="#3498DB" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="→" FontSize="16" Foreground="#3498DB"
+                                       VerticalAlignment="Center"/>
                         </Grid>
-
-                        <Grid ColumnDefinitions="*, Auto"
-                              Margin="20 5">
-
-                            <StackPanel Orientation="Horizontal">
-                                 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/outgoing-mail.png"
-						                Width="16" Height="16"
-						                Margin="10"/>
-
-                                 <TextBlock FontWeight="Bold"
-                                            FontSize="16"
-                                            VerticalAlignment="Center">
-                                     <Run Text="Исходящие"/>
-                                 </TextBlock>
-                            </StackPanel>
-
-                            <TextBlock Grid.Column="1"
-                                       FontWeight="Black"
-                                       VerticalAlignment="Center"
-                                       FontSize="18"
-                                       Text="12"/>
-                            
-                        </Grid>
-
-
-                        <Button HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Stretch"
-                                Background="Transparent"
-                                BorderThickness="1"
-                                BorderBrush="#CCCCCC"
-                                Margin="5"
-                                Command="{Binding OpenMenuByNameCommand}"
-                                CommandParameter="Сообщения">
-
-                            <Grid ColumnDefinitions="*, Auto"
-                                  HorizontalAlignment="Stretch">
-
-                                <TextBlock Text="Перейти в чат"
-                                           FontWeight="Bold"
-                                           Margin="10"
-                                           VerticalAlignment="Center"/>
-
-                                 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/arrow.png"
-						                Width="32" Height="32"
-                                        HorizontalAlignment="Center"
-                                        Grid.Column="1"
-						                Margin="10"/>
-                            </Grid>
-
-                        </Button>
-
-                    </StackPanel>
-                </Border>
-
-            </Grid>
-
-            <Grid Margin="5 0 10 5"
-                  RowDefinitions="Auto, Auto">
-
-                <Border CornerRadius="5 5 0 0"
-                        BorderBrush="{DynamicResource BorderBrushColor}"
-                        VerticalAlignment="Top"
-                        BorderThickness="1 1 1 0">
-
-                    <StackPanel Orientation="Horizontal">
-
-                           <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/star.png"
-						          Width="32" Height="32"
-						          Margin="10"/>
-
-                            <TextBlock FontWeight="Bold"
-                                       FontSize="16"
-                                       VerticalAlignment="Center">
-                                <Run Text="Средний балл школы по городу"/>
-                            </TextBlock>
-
-                    </StackPanel>
-                </Border>
-
-                <Border CornerRadius="0 0 5 5"
-                        BorderBrush="{DynamicResource BorderBrushColor}"
-                        Margin="0 -1 0 0"
-                        VerticalAlignment="Top"
-                        BorderThickness="1"
-                        Grid.Row="1">
-
-                     <TextBlock VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                FontWeight="Black"
-                                FontSize="18"
-                                Foreground="Green"
-                                Margin="10">
-                         <Run Text="4.68"/>
-                     </TextBlock>
-                </Border>
-
-            </Grid>
-
-        </UniformGrid>
-
-        <Grid RowDefinitions="Auto, *"
-              Grid.Row="3">
-
-            <Border BorderBrush="{DynamicResource BorderBrushColor}"
-                    BorderThickness="1">
-
-                <Grid ColumnDefinitions="*, Auto">
-
-                    <StackPanel Orientation="Horizontal">
-                           <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/edit-document.png"
-						          Width="32" Height="32"
-						          Margin="10"/>
-
-                            <TextBlock FontWeight="Bold"
-                                       FontSize="16"
-                                       VerticalAlignment="Center">
-                                <Run Text="Последние приказы"/>
-                            </TextBlock>
-                    </StackPanel>
-
-                    <Button HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            Background="Transparent"
-                            BorderThickness="1"
-                            BorderBrush="#CCCCCC"
-                            Margin="5"
-                            Grid.Column="1"
-                            Command="{Binding OpenMenuByNameCommand}"
-                            CommandParameter="Приказы">
-
-                            <Grid ColumnDefinitions="*, Auto"
-                                  HorizontalAlignment="Stretch">
-
-                                <TextBlock Text="Открыть все приказы"
-                                           FontWeight="Bold"
-                                           Margin="10"
-                                           VerticalAlignment="Center"/>
-
-                                 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/arrow.png"
-						                Width="32" Height="32"
-                                        HorizontalAlignment="Center"
-                                        Grid.Column="1"
-						                Margin="10"/>
-                            </Grid>
-
                     </Button>
-                </Grid>
-                
+
+                </StackPanel>
             </Border>
 
-            <Border BorderBrush="{DynamicResource BorderBrushColor}"
-                    BorderThickness="1 0 1 1"
-                    Grid.Row="1">
+            <!-- Карточка среднего балла -->
+            <Border Grid.Column="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="10" Margin="8 0 0 0">
+                <StackPanel Spacing="0">
 
-                <ItemsControl ItemsSource="{Binding Orders}" Grid.Row="1">
+                    <Border Background="#F8F9FA" CornerRadius="10,10,0,0"
+                            BorderBrush="#E8ECF0" BorderThickness="0,0,0,1" Padding="16,12">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/star.png"
+                                   Width="20" Height="20" VerticalAlignment="Center"/>
+                            <TextBlock Text="Средний балл по школе" FontWeight="Bold" FontSize="14"
+                                       VerticalAlignment="Center" Foreground="#2C3E50"/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Spacing="6" Margin="16,20">
+                        <TextBlock Text="{Binding AvgGradeText}"
+                                   FontSize="52" FontWeight="Black"
+                                   Foreground="{Binding AvgGradeColor}"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="из 5.00" FontSize="13" Foreground="#AAA"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                            Background="Transparent" BorderThickness="1" BorderBrush="#E8ECF0"
+                            CornerRadius="6" Margin="12,0,12,12"
+                            Command="{Binding OpenMenuByNameCommand}" CommandParameter="Журнал">
+                        <Grid ColumnDefinitions="*, Auto" Margin="4,0">
+                            <TextBlock Text="Открыть журнал" FontSize="12" FontWeight="SemiBold"
+                                       Foreground="#27AE60" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="→" FontSize="16" Foreground="#27AE60"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </Button>
+
+                </StackPanel>
+            </Border>
+
+        </Grid>
+
+        <!-- Последние приказы -->
+        <Border Grid.Row="3" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                CornerRadius="10">
+            <Grid RowDefinitions="Auto, *">
+
+                <!-- Шапка -->
+                <Border Grid.Row="0" Background="#F8F9FA" CornerRadius="10,10,0,0"
+                        BorderBrush="#E8ECF0" BorderThickness="0,0,0,1" Padding="16,12">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/edit-document.png"
+                                   Width="20" Height="20" VerticalAlignment="Center"/>
+                            <TextBlock Text="Последние приказы" FontWeight="Bold" FontSize="14"
+                                       VerticalAlignment="Center" Foreground="#2C3E50"/>
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Background="Transparent" BorderThickness="1" BorderBrush="#E0E0E0"
+                                CornerRadius="6" Padding="12,5"
+                                Command="{Binding OpenMenuByNameCommand}" CommandParameter="Приказы">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="Все приказы" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="#555" VerticalAlignment="Center"/>
+                                <TextBlock Text="→" FontSize="13" Foreground="#555" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Строки -->
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding RecentOrders}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <!-- Основная информация приказа -->
-                                <StackPanel Orientation="Vertical">
-                                    <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding Date}" Foreground="Gray"/>
-                                </StackPanel>
-                            </Grid>
+                        <DataTemplate x:DataType="vm:RecentPrikazViewModel">
+                            <Border BorderBrush="#F0F0F0" BorderThickness="0,0,0,1" Padding="16,10">
+                                <Grid ColumnDefinitions="Auto, *, Auto">
+
+                                    <Border Grid.Column="0"
+                                            Background="{Binding BadgeColor}"
+                                            CornerRadius="10" Padding="10,3"
+                                            VerticalAlignment="Center" Margin="0,0,14,0">
+                                        <TextBlock Text="{Binding Tip}"
+                                                   FontSize="11" FontWeight="Bold" Foreground="White"/>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock Text="{Binding Nomer}"
+                                                   FontSize="12" FontWeight="SemiBold" Foreground="#444"/>
+                                        <TextBlock Text="{Binding Soderzhanie}"
+                                                   FontSize="11" Foreground="#888"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding DateText}"
+                                               FontSize="11" Foreground="#AAA"
+                                               VerticalAlignment="Center" Margin="14,0,0,0"/>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                
-            </Border>
 
-        </Grid>
+                <!-- Пустое состояние -->
+                <TextBlock Grid.Row="1"
+                           Text="Приказов пока нет"
+                           FontSize="13" Foreground="#BBBBBB"
+                           HorizontalAlignment="Center"
+                           Margin="0,20"
+                           IsVisible="{Binding !RecentOrders.Count}"/>
+
+            </Grid>
+        </Border>
 
     </Grid>
+    </ScrollViewer>
 
 </UserControl>

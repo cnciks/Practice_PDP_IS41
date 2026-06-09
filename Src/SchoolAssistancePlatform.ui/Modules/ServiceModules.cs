@@ -42,6 +42,36 @@ internal class ServiceModules : Module
 			.SingleInstance();
 
 		builder
+			.RegisterType<ScheduleService>()
+			.AsSelf()
+			.SingleInstance();
+
+		builder
+			.RegisterType<CurriculumService>()
+			.AsSelf()
+			.SingleInstance();
+
+		builder
+			.RegisterType<FinanceService>()
+			.AsSelf()
+			.SingleInstance();
+
+		builder
+			.RegisterType<CommandsService>()
+			.AsSelf()
+			.SingleInstance();
+
+		builder
+			.RegisterType<MessagesService>()
+			.AsSelf()
+			.SingleInstance();
+
+		builder
+			.RegisterType<AdministrationService>()
+			.AsSelf()
+			.SingleInstance();
+
+		builder
 			.RegisterType<MenuActions>()
 			.AsSelf()
 			.SingleInstance();

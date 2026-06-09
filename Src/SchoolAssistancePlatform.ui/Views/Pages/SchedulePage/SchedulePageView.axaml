@@ -2,465 +2,444 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" 
-             x:Class="SchoolAssistancePlatform.UI.SchedulePageView">
+             xmlns:vm="clr-namespace:SchoolAssistancePlatform.UI.Views.Pages.SchedulePage"
+             mc:Ignorable="d"
+             x:Class="SchoolAssistancePlatform.UI.Views.Pages.SchedulePage.SchedulePageView"
+             x:DataType="vm:SchedulePageViewModel">
 
-    <Grid RowDefinitions="Auto, *"
-          Margin="20">
+    <Grid ColumnDefinitions="*, Auto" Margin="20">
 
-		<Grid ColumnDefinitions="*, Auto"
-			  Margin="0 0 0 20">
+        <!-- Основная часть -->
+        <Grid Grid.Column="0" RowDefinitions="Auto, *" Margin="0,0,8,0">
 
-			<Border BorderThickness="1"
-					BorderBrush="#CCCCCC"
-					Margin="0 0 20 0"
-					CornerRadius="3">
-                <Grid VerticalAlignment="Center"
-                      ColumnDefinitions="*, Auto">                    
-				    <StackPanel VerticalAlignment="Center"
-				    			Orientation="Horizontal"
-				    			Margin="20 0">
-				    	<ComboBox PlaceholderText="Класс"
-				    			  Width="180"
-				    			  Margin="0 0 20 0"/>
-				    	<ComboBox PlaceholderText="Неделя"
-				    			  Width="180"
-				    			  Margin="0 0 20 0"/>
-				    	<ComboBox PlaceholderText="Учитель"
-				    			  Width="180"/>
-				    </StackPanel>
+            <!-- Фильтр + кнопка добавить -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,16">
 
-                    
-				    <ToggleButton x:Name="notification"
-				    			  Background="Transparent"
-                                  IsChecked="{Binding ApplyFilter}"
-				    			  Grid.Column="1">
-				    	<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/filter.png"
-				    		Width="32" Height="32"
-				    		Margin="10"/>
-				    </ToggleButton>
+                <Border Grid.Column="0" BorderThickness="1" BorderBrush="#DDDDDD"
+                        CornerRadius="8" Background="White" Margin="0,0,10,0">
+                    <Grid ColumnDefinitions="Auto, Auto, Auto" Margin="10,0" VerticalAlignment="Center">
 
-                </Grid>
-			</Border>
+                        <ComboBox Grid.Column="0"
+                                  PlaceholderText="Фильтр по классу"
+                                  Width="180"
+                                  Margin="0,6,12,6"
+                                  ItemsSource="{Binding FilterKlasses}"
+                                  SelectedItem="{Binding FilterKlass}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:KlassItem">
+                                    <TextBlock Text="{Binding NomerKlassa}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
-			<Button HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"
-					Background="Transparent"
-					BorderThickness="1"
-					BorderBrush="#CCCCCC"
-					Grid.Column="1"
-					Command="{Binding EditScheduleCommand}">
-			
-				<Grid ColumnDefinitions="Auto, *"
-					  HorizontalAlignment="Stretch"
-					  Margin="10 0">
-			
-					 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/edit.png"
-							Width="32" Height="32"
-							HorizontalAlignment="Center"
-							Margin="10"/>
-			
-					<TextBlock Text="Редактировать"
-							   FontWeight="Bold"
-							   Grid.Column="1"
-							   VerticalAlignment="Center"/>
-				</Grid>
-			
-			</Button>
-		</Grid>
-        <DockPanel Grid.Row="1">
+                        <ComboBox Grid.Column="1"
+                                  PlaceholderText="Фильтр по учителю"
+                                  Width="220"
+                                  Margin="0,6,12,6"
+                                  ItemsSource="{Binding FilterTeachers}"
+                                  SelectedItem="{Binding FilterTeacher}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:TeacherItem">
+                                    <TextBlock Text="{Binding FullName}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="320"/>
-            </Grid.ColumnDefinitions>
-            
-            <Border Grid.Column="0"
+                        <ToggleButton Grid.Column="2"
+                                      IsChecked="{Binding ApplyFilter}"
+                                      Background="Transparent"
+                                      Padding="8,6">
+                            <TextBlock Text="Применить" FontSize="12"/>
+                        </ToggleButton>
+
+                    </Grid>
+                </Border>
+
+                <Button Grid.Column="1" Command="{Binding AddCommand}"
+                        Background="#3498DB" Foreground="White"
+                        BorderThickness="0" CornerRadius="8" Padding="16,9">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="+" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="Добавить урок" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Таблица расписания -->
+            <Border Grid.Row="1"
                     BorderBrush="#DDDDDD"
                     BorderThickness="1"
                     CornerRadius="4"
                     Background="White">
-                
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/> 
-                    </Grid.RowDefinitions>
+                <Grid RowDefinitions="Auto, *">
 
+                    <!-- Заголовок -->
                     <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="0,0,0,1" Background="#F5F5F5">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/> 
+                                <ColumnDefinition Width="110"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            
-                            <TextBlock Grid.Column="0" 
-                                       Text="⏰ Время" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center" 
-                                       FontWeight="Bold"
-                                       Padding="10,5"/>
-                            
+                            <TextBlock Grid.Column="0" Text="⏰ Время"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       FontWeight="Bold" Padding="10,8"/>
                             <Border Grid.Column="1" BorderBrush="#DDDDDD" BorderThickness="1,0,0,0"/>
-                            <TextBlock Grid.Column="1" 
-                                       Text="ПН" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center" 
-                                       FontWeight="Bold"
-                                       Padding="10,5"/>
-                            <TextBlock Grid.Column="1" 
-                                       FontSize="10" 
-                                       Foreground="Gray"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Bottom"
-                                       Margin="0,0,0,3"/>
-                            
+                            <TextBlock Grid.Column="1" Text="ПН" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Padding="10,8"/>
                             <Border Grid.Column="2" BorderBrush="#DDDDDD" BorderThickness="1,0,0,0"/>
-                            <TextBlock Grid.Column="2" 
-                                       Text="ВТ" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center" 
-                                       FontWeight="Bold"
-                                       Padding="10,5"/>
-                            <TextBlock Grid.Column="2" 
-                                       FontSize="10" 
-                                       Foreground="Gray"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Bottom"
-                                       Margin="0,0,0,3"/>
-                            
+                            <TextBlock Grid.Column="2" Text="ВТ" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Padding="10,8"/>
                             <Border Grid.Column="3" BorderBrush="#DDDDDD" BorderThickness="1,0,0,0"/>
-                            <TextBlock Grid.Column="3" 
-                                       Text="СР" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center" 
-                                       FontWeight="Bold"
-                                       Padding="10,5"/>
-                            <TextBlock Grid.Column="3"
-                                       FontSize="10" 
-                                       Foreground="Gray"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Bottom"
-                                       Margin="0,0,0,3"/>
-                            
+                            <TextBlock Grid.Column="3" Text="СР" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Padding="10,8"/>
                             <Border Grid.Column="4" BorderBrush="#DDDDDD" BorderThickness="1,0,0,0"/>
-                            <TextBlock Grid.Column="4" 
-                                       Text="ЧТ" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center" 
-                                       FontWeight="Bold"
-                                       Padding="10,5"/>
-                            <TextBlock Grid.Column="4" 
-                                       FontSize="10" 
-                                       Foreground="Gray"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Bottom"
-                                       Margin="0,0,0,3"/>
-                            
+                            <TextBlock Grid.Column="4" Text="ЧТ" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Padding="10,8"/>
                             <Border Grid.Column="5" BorderBrush="#DDDDDD" BorderThickness="1,0,0,0"/>
-                            <TextBlock Grid.Column="5" 
-                                       Text="ПТ" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center" 
-                                       FontWeight="Bold"
-                                       Padding="10,5"/>
-                            <TextBlock Grid.Column="5" 
-                                       Foreground="Gray"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Bottom"
-                                       Margin="0,0,0,3"/>
+                            <TextBlock Grid.Column="5" Text="ПТ" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Padding="10,8"/>
                         </Grid>
                     </Border>
-                    
+
+                    <!-- Строки -->
                     <ListBox Grid.Row="1"
                              ItemsSource="{Binding ScheduleItems}"
-                             BorderThickness="0">
-                        
+                             BorderThickness="0"
+                             Background="Transparent">
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:focus /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </ListBox.Styles>
                         <ListBox.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="vm:ScheduleRowViewModel">
                                 <Border BorderBrush="#DDDDDD" BorderThickness="0,0,0,1">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="110"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        
-                                        <Border Grid.Column="0" 
-                                                BorderBrush="#DDDDDD" 
-                                                BorderThickness="0,0,1,0"
+
+                                        <!-- Время -->
+                                        <Border Grid.Column="0"
+                                                BorderBrush="#DDDDDD" BorderThickness="0,0,1,0"
                                                 Background="#FAFAFA">
                                             <TextBlock Text="{Binding Time}"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"
-                                                       FontWeight="Bold"
-                                                       FontSize="14"/>
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       FontWeight="Bold" FontSize="12" Padding="4"/>
                                         </Border>
-                                        
-                                        <Button Grid.Column="1"
-                                                Command="{Binding $parent[ListBox].DataContext.SelectLessonCommand}"
-                                                CommandParameter="{Binding Monday}"
-                                                BorderThickness="0"
-                                                Background="Transparent"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                Padding="5">
-                                            <Button.Styles>
-                                                <Style Selector="Button:pointerover">
-                                                    <Setter Property="Background" Value="#E3F2FD"/>
-                                                </Style>
-                                            </Button.Styles>
-                                            <StackPanel Spacing="2">
-                                                <TextBlock Text="{Binding Monday.Subject}"
-                                                           FontWeight="Bold"
-                                                           FontSize="12"
-                                                           TextWrapping="Wrap"/>
-                                                <TextBlock Text="{Binding Monday.Teacher}"
-                                                           FontSize="10"
-                                                           Foreground="#666"/>
-                                                <TextBlock Text="{Binding Monday.Room}"
-                                                           FontSize="9"
-                                                           Foreground="#999"/>
-                                            </StackPanel>
-                                        </Button>
-                                        
+
+                                        <!-- Понедельник -->
+                                        <Grid Grid.Column="1">
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).EditLessonCommand}"
+                                                    CommandParameter="{Binding Monday}"
+                                                    BorderThickness="0" Background="Transparent"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    VerticalContentAlignment="Stretch"
+                                                    HorizontalAlignment="Stretch"
+                                                    Padding="5" MinHeight="50">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="Background" Value="#E3F2FD"/>
+                                                    </Style>
+                                                </Button.Styles>
+                                                <StackPanel Spacing="2" IsVisible="{Binding Monday.HasLesson}">
+                                                    <TextBlock Text="{Binding Monday.Subject}" FontWeight="Bold" FontSize="12" TextWrapping="Wrap"/>
+                                                    <TextBlock Text="{Binding Monday.Teacher}" FontSize="10" Foreground="#666"/>
+                                                    <TextBlock Text="{Binding Monday.Room}"    FontSize="9"  Foreground="#999"/>
+                                                    <TextBlock Text="{Binding Monday.NomerKlassa}" FontSize="9" Foreground="#AAA"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).DeleteLessonCommand}"
+                                                    CommandParameter="{Binding Monday}"
+                                                    IsVisible="{Binding Monday.HasLesson}"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Padding="2" Margin="2" FontSize="9" Foreground="#E74C3C"
+                                                    ToolTip.Tip="Удалить">
+                                                <TextBlock Text="✕"/>
+                                            </Button>
+                                        </Grid>
+
+                                        <!-- Вторник -->
                                         <Border Grid.Column="2" BorderBrush="#DDDDDD" BorderThickness="1,0,0,0"/>
+                                        <Grid Grid.Column="2">
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).EditLessonCommand}"
+                                                    CommandParameter="{Binding Tuesday}"
+                                                    BorderThickness="0" Background="Transparent"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    VerticalContentAlignment="Stretch"
+                                                    HorizontalAlignment="Stretch"
+                                                    Padding="5" MinHeight="50">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="Background" Value="#E8F5E9"/>
+                                                    </Style>
+                                                </Button.Styles>
+                                                <StackPanel Spacing="2" IsVisible="{Binding Tuesday.HasLesson}">
+                                                    <TextBlock Text="{Binding Tuesday.Subject}" FontWeight="Bold" FontSize="12" TextWrapping="Wrap"/>
+                                                    <TextBlock Text="{Binding Tuesday.Teacher}" FontSize="10" Foreground="#666"/>
+                                                    <TextBlock Text="{Binding Tuesday.Room}"    FontSize="9"  Foreground="#999"/>
+                                                    <TextBlock Text="{Binding Tuesday.NomerKlassa}" FontSize="9" Foreground="#AAA"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).DeleteLessonCommand}"
+                                                    CommandParameter="{Binding Tuesday}"
+                                                    IsVisible="{Binding Tuesday.HasLesson}"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Padding="2" Margin="2" FontSize="9" Foreground="#E74C3C"
+                                                    ToolTip.Tip="Удалить">
+                                                <TextBlock Text="✕"/>
+                                            </Button>
+                                        </Grid>
 
-
-                                        <Button Grid.Column="2"
-                                                Command="{Binding $parent[ListBox].DataContext.SelectLessonCommand}"
-                                                CommandParameter="{Binding Tuesday}"
-                                                BorderThickness="0"
-                                                Background="Transparent"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                Padding="5">
-                                            <Button.Styles>
-                                                <Style Selector="Button:pointerover">
-                                                    <Setter Property="Background" Value="#E8F5E9"/>
-                                                </Style>
-                                            </Button.Styles>
-                                            <StackPanel Spacing="2">
-                                                <TextBlock Text="{Binding Tuesday.Subject}"
-                                                           FontWeight="Bold"
-                                                           FontSize="12"
-                                                           TextWrapping="Wrap"/>
-                                                <TextBlock Text="{Binding Tuesday.Teacher}"
-                                                           FontSize="10"
-                                                           Foreground="#666"/>
-                                                <TextBlock Text="{Binding Tuesday.Room}"
-                                                           FontSize="9"
-                                                           Foreground="#999"/>
-                                            </StackPanel>
-                                        </Button>
-                                        
+                                        <!-- Среда -->
                                         <Border Grid.Column="3" BorderBrush="#DDDDDD" BorderThickness="1,0,0,0"/>
+                                        <Grid Grid.Column="3">
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).EditLessonCommand}"
+                                                    CommandParameter="{Binding Wednesday}"
+                                                    BorderThickness="0" Background="Transparent"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    VerticalContentAlignment="Stretch"
+                                                    HorizontalAlignment="Stretch"
+                                                    Padding="5" MinHeight="50">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="Background" Value="#FFF3E0"/>
+                                                    </Style>
+                                                </Button.Styles>
+                                                <StackPanel Spacing="2" IsVisible="{Binding Wednesday.HasLesson}">
+                                                    <TextBlock Text="{Binding Wednesday.Subject}" FontWeight="Bold" FontSize="12" TextWrapping="Wrap"/>
+                                                    <TextBlock Text="{Binding Wednesday.Teacher}" FontSize="10" Foreground="#666"/>
+                                                    <TextBlock Text="{Binding Wednesday.Room}"    FontSize="9"  Foreground="#999"/>
+                                                    <TextBlock Text="{Binding Wednesday.NomerKlassa}" FontSize="9" Foreground="#AAA"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).DeleteLessonCommand}"
+                                                    CommandParameter="{Binding Wednesday}"
+                                                    IsVisible="{Binding Wednesday.HasLesson}"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Padding="2" Margin="2" FontSize="9" Foreground="#E74C3C"
+                                                    ToolTip.Tip="Удалить">
+                                                <TextBlock Text="✕"/>
+                                            </Button>
+                                        </Grid>
 
-
-                                        <Button Grid.Column="3"
-                                                Command="{Binding $parent[ListBox].DataContext.SelectLessonCommand}"
-                                                CommandParameter="{Binding Wednesday}"
-                                                BorderThickness="0"
-                                                Background="Transparent"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                Padding="5">
-                                            <Button.Styles>
-                                                <Style Selector="Button:pointerover">
-                                                    <Setter Property="Background" Value="#FFF3E0"/>
-                                                </Style>
-                                            </Button.Styles>
-                                            <StackPanel Spacing="2">
-                                                <TextBlock Text="{Binding Wednesday.Subject}"
-                                                           FontWeight="Bold"
-                                                           FontSize="12"
-                                                           TextWrapping="Wrap"/>
-                                                <TextBlock Text="{Binding Wednesday.Teacher}"
-                                                           FontSize="10"
-                                                           Foreground="#666"/>
-                                                <TextBlock Text="{Binding Wednesday.Room}"
-                                                           FontSize="9"
-                                                           Foreground="#999"/>
-                                            </StackPanel>
-                                        </Button>
-                                        
+                                        <!-- Четверг -->
                                         <Border Grid.Column="4" BorderBrush="#DDDDDD" BorderThickness="1,0,0,0"/>
-                                        
-                                        <Button Grid.Column="4"
-                                                Command="{Binding $parent[ListBox].DataContext.SelectLessonCommand}"
-                                                CommandParameter="{Binding Thursday}"
-                                                BorderThickness="0"
-                                                Background="Transparent"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                Padding="5">
-                                            <Button.Styles>
-                                                <Style Selector="Button:pointerover">
-                                                    <Setter Property="Background" Value="#FCE4EC"/>
-                                                </Style>
-                                            </Button.Styles>
-                                            <StackPanel Spacing="2">
-                                                <TextBlock Text="{Binding Thursday.Subject}"
-                                                           FontWeight="Bold"
-                                                           FontSize="12"
-                                                           TextWrapping="Wrap"/>
-                                                <TextBlock Text="{Binding Thursday.Teacher}"
-                                                           FontSize="10"
-                                                           Foreground="#666"/>
-                                                <TextBlock Text="{Binding Thursday.Room}"
-                                                           FontSize="9"
-                                                           Foreground="#999"/>
-                                            </StackPanel>
-                                        </Button>
-                                        
+                                        <Grid Grid.Column="4">
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).EditLessonCommand}"
+                                                    CommandParameter="{Binding Thursday}"
+                                                    BorderThickness="0" Background="Transparent"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    VerticalContentAlignment="Stretch"
+                                                    HorizontalAlignment="Stretch"
+                                                    Padding="5" MinHeight="50">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="Background" Value="#FCE4EC"/>
+                                                    </Style>
+                                                </Button.Styles>
+                                                <StackPanel Spacing="2" IsVisible="{Binding Thursday.HasLesson}">
+                                                    <TextBlock Text="{Binding Thursday.Subject}" FontWeight="Bold" FontSize="12" TextWrapping="Wrap"/>
+                                                    <TextBlock Text="{Binding Thursday.Teacher}" FontSize="10" Foreground="#666"/>
+                                                    <TextBlock Text="{Binding Thursday.Room}"    FontSize="9"  Foreground="#999"/>
+                                                    <TextBlock Text="{Binding Thursday.NomerKlassa}" FontSize="9" Foreground="#AAA"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).DeleteLessonCommand}"
+                                                    CommandParameter="{Binding Thursday}"
+                                                    IsVisible="{Binding Thursday.HasLesson}"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Padding="2" Margin="2" FontSize="9" Foreground="#E74C3C"
+                                                    ToolTip.Tip="Удалить">
+                                                <TextBlock Text="✕"/>
+                                            </Button>
+                                        </Grid>
+
+                                        <!-- Пятница -->
                                         <Border Grid.Column="5" BorderBrush="#DDDDDD" BorderThickness="1,0,0,0"/>
-                                        
-                                        <Button Grid.Column="5"
-                                                Command="{Binding $parent[ListBox].DataContext.SelectLessonCommand}"
-                                                CommandParameter="{Binding Friday}"
-                                                BorderThickness="0"
-                                                Background="Transparent"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                Padding="5">
-                                            <Button.Styles>
-                                                <Style Selector="Button:pointerover">
-                                                    <Setter Property="Background" Value="#E8EAF6"/>
-                                                </Style>
-                                            </Button.Styles>
-                                            <StackPanel Spacing="2">
-                                                <TextBlock Text="{Binding Friday.Subject}"
-                                                           FontWeight="Bold"
-                                                           FontSize="12"
-                                                           TextWrapping="Wrap"/>
-                                                <TextBlock Text="{Binding Friday.Teacher}"
-                                                           FontSize="10"
-                                                           Foreground="#666"/>
-                                                <TextBlock Text="{Binding Friday.Room}"
-                                                           FontSize="9"
-                                                           Foreground="#999"/>
-                                            </StackPanel>
-                                        </Button>
+                                        <Grid Grid.Column="5">
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).EditLessonCommand}"
+                                                    CommandParameter="{Binding Friday}"
+                                                    BorderThickness="0" Background="Transparent"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    VerticalContentAlignment="Stretch"
+                                                    HorizontalAlignment="Stretch"
+                                                    Padding="5" MinHeight="50">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="Background" Value="#E8EAF6"/>
+                                                    </Style>
+                                                </Button.Styles>
+                                                <StackPanel Spacing="2" IsVisible="{Binding Friday.HasLesson}">
+                                                    <TextBlock Text="{Binding Friday.Subject}" FontWeight="Bold" FontSize="12" TextWrapping="Wrap"/>
+                                                    <TextBlock Text="{Binding Friday.Teacher}" FontSize="10" Foreground="#666"/>
+                                                    <TextBlock Text="{Binding Friday.Room}"    FontSize="9"  Foreground="#999"/>
+                                                    <TextBlock Text="{Binding Friday.NomerKlassa}" FontSize="9" Foreground="#AAA"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Command="{Binding $parent[ListBox].((vm:SchedulePageViewModel)DataContext).DeleteLessonCommand}"
+                                                    CommandParameter="{Binding Friday}"
+                                                    IsVisible="{Binding Friday.HasLesson}"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Padding="2" Margin="2" FontSize="9" Foreground="#E74C3C"
+                                                    ToolTip.Tip="Удалить">
+                                                <TextBlock Text="✕"/>
+                                            </Button>
+                                        </Grid>
+
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
+
                 </Grid>
             </Border>
-            
-            <Border Grid.Column="1"
-                    Margin="10,0,0,0"
-                    BorderBrush="#DDDDDD"
-                    BorderThickness="1"
-                    CornerRadius="8"
-                    Background="White"
-                    IsVisible="{Binding IsDetailsVisible}">
-                
-                <StackPanel Margin="15" Spacing="15">
-                    <TextBlock Text="📋 Детали урока"
-                               FontSize="18"
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-                    
-                    <Border Background="#F5F5F5"
-                            CornerRadius="6"
-                            Padding="10">
-                        <StackPanel Spacing="8">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="120"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Grid.Column="0" 
-                                           Text="📚 Предмет:" 
-                                           FontWeight="Bold"
-                                           Foreground="#555"/>
-                                <TextBlock Grid.Column="1" 
-                                           Text="{Binding SelectedLesson.Subject}"
-                                           FontWeight="Bold"
-                                           FontSize="14"/>
-                            </Grid>
-                            
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Grid.Column="0" 
-                                           Text="👩‍🏫 Учитель:" 
-                                           FontWeight="Bold"
-                                           Foreground="#555"/>
-                                <TextBlock Grid.Column="1" 
-                                           Text="{Binding SelectedLesson.Teacher}"
-                                           FontSize="14"/>
-                            </Grid>
-                            
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Grid.Column="0" 
-                                           Text="🏫 Кабинет:" 
-                                           FontWeight="Bold"
-                                           Foreground="#555"/>
-                                <TextBlock Grid.Column="1" 
-                                           Text="{Binding SelectedLesson.Room}"
-                                           FontSize="14"/>
-                            </Grid>
-                            
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Grid.Column="0" 
-                                           Text="📅 День:" 
-                                           FontWeight="Bold"
-                                           Foreground="#555"/>
-                                <TextBlock Grid.Column="1" 
-                                           Text="{Binding SelectedLesson.Day}"
-                                           FontSize="14"/>
-                            </Grid>
-                            
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Grid.Column="0" 
-                                           Text="⏰ Время:" 
-                                           FontWeight="Bold"
-                                           Foreground="#555"/>
-                                <TextBlock Grid.Column="1" 
-                                           Text="{Binding SelectedLesson.Time}"
-                                           FontSize="14"/>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-                    
-                    <Button Command="{Binding CloseDetailsCommand}"
-                            Content="Закрыть"
-                            HorizontalAlignment="Stretch"
-                            Padding="10"/>
-                </StackPanel>
-            </Border>
+
         </Grid>
-    </DockPanel>
+
+        <!-- Боковая панель формы -->
+        <Border Grid.Column="1"
+                IsVisible="{Binding IsFormVisible}"
+                Width="310"
+                Background="White"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1"
+                CornerRadius="10">
+            <StackPanel Spacing="0">
+
+                <!-- Шапка -->
+                <Border Background="#F8F9FA" BorderBrush="#EEEEEE" BorderThickness="0,0,0,1"
+                        CornerRadius="10,10,0,0" Padding="16,14">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <TextBlock Text="{Binding FormTitle}" FontWeight="Bold"
+                                   FontSize="15" Foreground="#2C3E50" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Command="{Binding CancelCommand}"
+                                Background="Transparent" BorderThickness="0"
+                                Padding="4" VerticalAlignment="Center">
+                            <TextBlock Text="✕" FontSize="14" Foreground="#888"/>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Поля -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="12" Margin="16">
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Класс *" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <ComboBox ItemsSource="{Binding Klasses}"
+                                      SelectedItem="{Binding Form.SelectedKlass}"
+                                      HorizontalAlignment="Stretch" Padding="10,8" FontSize="13">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:KlassItem">
+                                        <TextBlock Text="{Binding NomerKlassa}" FontSize="13"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Предмет *" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <ComboBox ItemsSource="{Binding Subjects}"
+                                      SelectedItem="{Binding Form.SelectedSubject}"
+                                      HorizontalAlignment="Stretch" Padding="10,8" FontSize="13">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:SubjectItem">
+                                        <TextBlock Text="{Binding Nazvanie}" FontSize="13"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Учитель *" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <ComboBox ItemsSource="{Binding Teachers}"
+                                      SelectedItem="{Binding Form.SelectedTeacher}"
+                                      HorizontalAlignment="Stretch" Padding="10,8" FontSize="13">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:TeacherItem">
+                                        <TextBlock Text="{Binding FullName}" FontSize="13"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="День недели (1=Пн, 5=Пт) *" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <NumericUpDown Value="{Binding Form.DenNedeli}"
+                                           Minimum="1" Maximum="5"
+                                           Increment="1" FormatString="0"
+                                           HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Номер урока *" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <NumericUpDown Value="{Binding Form.NomerUroka}"
+                                           Minimum="1" Maximum="7"
+                                           Increment="1" FormatString="0"
+                                           HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Кабинет" FontSize="12" FontWeight="SemiBold" Foreground="#666"/>
+                            <TextBox Text="{Binding Form.Kabinet}"
+                                     PlaceholderText="например: 301"
+                                     Padding="10,8" FontSize="13"
+                                     BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                        </StackPanel>
+
+                        <!-- Ошибка -->
+                        <Border Background="#FDEDEC" CornerRadius="6" Padding="10,8"
+                                IsVisible="{Binding FormError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                            <TextBlock Text="{Binding FormError}" Foreground="#E74C3C"
+                                       FontSize="12" TextWrapping="Wrap"/>
+                        </Border>
+
+                        <!-- Кнопки -->
+                        <Grid ColumnDefinitions="*, *" Margin="0,4,0,16">
+                            <Button Grid.Column="0" Command="{Binding CancelCommand}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                    Background="Transparent" BorderThickness="1" BorderBrush="#CCCCCC"
+                                    CornerRadius="6" Padding="0,9" Margin="0,0,4,0">
+                                <TextBlock Text="Отмена" FontSize="13" Foreground="#666"/>
+                            </Button>
+                            <Button Grid.Column="1" Command="{Binding SaveCommand}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                    Background="#3498DB" BorderThickness="0"
+                                    CornerRadius="6" Padding="0,9" Margin="4,0,0,0">
+                                <TextBlock Text="Сохранить" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                            </Button>
+                        </Grid>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+            </StackPanel>
+        </Border>
+
     </Grid>
 
 </UserControl>

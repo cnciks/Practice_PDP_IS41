@@ -13,4 +13,7 @@ public class UserDto
 
 	[AdaptMember("Role")]
 	public RoleDto Role { get; set; }
+
+	public long?  SotrudnikId  { get; set; }
+	public string? SotrudnikFIO { get; set; }
 }

@@ -2,7 +2,443 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SchoolAssistancePlatform.UI.AdministrationPageView">
-  AdministrationPageViewModel
+             xmlns:vm="clr-namespace:SchoolAssistancePlatform.UI.Views.Pages.AdministrationPage"
+             mc:Ignorable="d"
+             x:Class="SchoolAssistancePlatform.UI.Views.Pages.AdministrationPage.AdministrationPageView"
+             x:DataType="vm:AdministrationPageViewModel">
+
+    <Grid ColumnDefinitions="*, Auto" Margin="20">
+
+        <!-- Основная область -->
+        <Grid RowDefinitions="Auto, *">
+
+            <!-- Верхняя панель -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0 0 0 16">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+
+                    <Button Background="Transparent" BorderThickness="1" BorderBrush="#CCCCCC"
+                            CornerRadius="6" Padding="16,8"
+                            Command="{Binding SwitchTabCommand}" CommandParameter="users">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="👤" FontSize="14"/>
+                            <TextBlock Text="Пользователи" FontSize="13" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Background="Transparent" BorderThickness="1" BorderBrush="#CCCCCC"
+                            CornerRadius="6" Padding="16,8"
+                            Command="{Binding SwitchTabCommand}" CommandParameter="roles">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="🔑" FontSize="14"/>
+                            <TextBlock Text="Роли" FontSize="13" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <TextBox PlaceholderText="🔍 Поиск по логину, email, роли..."
+                             Width="300"
+                             Text="{Binding SearchText}"
+                             CornerRadius="6"
+                             Padding="10,7"
+                             IsVisible="{Binding IsUsersTab}"
+                             VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Кнопка добавления пользователя -->
+                <Button Grid.Column="1"
+                        Background="#3498DB" Foreground="White" FontWeight="Bold"
+                        CornerRadius="6" Padding="16,8"
+                        IsVisible="{Binding IsUsersTab}"
+                        Command="{Binding AddUserCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="+" FontSize="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="Добавить пользователя" FontSize="13" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Кнопка добавления роли -->
+                <Button Grid.Column="1"
+                        Background="#9B59B6" Foreground="White" FontWeight="Bold"
+                        CornerRadius="6" Padding="16,8"
+                        IsVisible="{Binding IsRolesTab}"
+                        Command="{Binding AddRoleCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="+" FontSize="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="Добавить роль" FontSize="13" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Таблица пользователей -->
+            <Border Grid.Row="1"
+                    BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Background="White"
+                    IsVisible="{Binding IsUsersTab}">
+                <Grid RowDefinitions="Auto, *">
+                    <Border Grid.Row="0" Background="#2C3E50" CornerRadius="8,8,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="48"/>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.Styles>
+                                <Style Selector="TextBlock">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="FontSize" Value="12"/>
+                                    <Setter Property="Padding" Value="12,10"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </Grid.Styles>
+                            <TextBlock Grid.Column="0" Text=""/>
+                            <TextBlock Grid.Column="1" Text="Логин"/>
+                            <TextBlock Grid.Column="2" Text="Email"/>
+                            <TextBlock Grid.Column="3" Text="Роль"/>
+                            <TextBlock Grid.Column="4" Text="Сотрудник"/>
+                            <TextBlock Grid.Column="5" Text=""/>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1">
+                        <ListBox ItemsSource="{Binding Users}"
+                                 BorderThickness="0" Background="Transparent">
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="#F8F9FA"/>
+                                </Style>
+                            </ListBox.Styles>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:UserViewModel">
+                                    <Border BorderBrush="#F0F0F0" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="48"/>
+                                                <ColumnDefinition Width="160"/>
+                                                <ColumnDefinition Width="180"/>
+                                                <ColumnDefinition Width="140"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="60"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Grid.Column="0"
+                                                    Background="{Binding AvatarColor}"
+                                                    CornerRadius="20"
+                                                    Width="32" Height="32"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Initials}"
+                                                           FontSize="12" FontWeight="Bold"
+                                                           Foreground="White"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Login}"
+                                                       Padding="12,12"
+                                                       FontWeight="SemiBold" FontSize="13"
+                                                       VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding Email}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="12" Foreground="#666"/>
+
+                                            <Border Grid.Column="3"
+                                                    Background="#EBF5FB" CornerRadius="12"
+                                                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                    Padding="12,4" Margin="12,0">
+                                                <TextBlock Text="{Binding RoleName}"
+                                                           FontSize="12" Foreground="#2980B9"
+                                                           FontWeight="SemiBold"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Column="4"
+                                                       Text="{Binding SotrudnikText}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="12"
+                                                       Foreground="#555"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,0,10,0"/>
+
+                                            <Button Grid.Column="5"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Padding="8" VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    Command="{Binding $parent[ListBox].((vm:AdministrationPageViewModel)DataContext).DeleteUserCommand}"
+                                                    CommandParameter="{Binding}">
+                                                <TextBlock Text="🗑" FontSize="15" Foreground="#E74C3C"/>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- Таблица ролей -->
+            <Border Grid.Row="1"
+                    BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Background="White"
+                    IsVisible="{Binding IsRolesTab}">
+                <Grid RowDefinitions="Auto, *">
+                    <Border Grid.Row="0" Background="#2C3E50" CornerRadius="8,8,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.Styles>
+                                <Style Selector="TextBlock">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="FontSize" Value="12"/>
+                                    <Setter Property="Padding" Value="14,10"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </Grid.Styles>
+                            <TextBlock Grid.Column="0" Text="Роль"/>
+                            <TextBlock Grid.Column="1" Text="Польз." HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="Права доступа"/>
+                            <TextBlock Grid.Column="3" Text=""/>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1">
+                        <ListBox ItemsSource="{Binding Roles}"
+                                 BorderThickness="0" Background="Transparent">
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="#F8F9FA"/>
+                                </Style>
+                            </ListBox.Styles>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:RoleViewModel">
+                                    <Border BorderBrush="#F0F0F0" BorderThickness="0,0,0,1" Padding="0,4">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="180"/>
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="60"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0"
+                                                        VerticalAlignment="Center" Margin="14,8">
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="{Binding Description}"
+                                                           FontSize="11" Foreground="#999"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+
+                                            <Border Grid.Column="1"
+                                                    Background="#EBF5FB" CornerRadius="10"
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                    Padding="10,3">
+                                                <TextBlock Text="{Binding UserCount}"
+                                                           FontSize="12" Foreground="#2980B9"
+                                                           FontWeight="Bold"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding PermText}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="11" Foreground="#555"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,14,0"/>
+
+                                            <Button Grid.Column="3"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Padding="8" VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    Command="{Binding $parent[ListBox].((vm:AdministrationPageViewModel)DataContext).DeleteRoleCommand}"
+                                                    CommandParameter="{Binding}">
+                                                <TextBlock Text="🗑" FontSize="15" Foreground="#E74C3C"/>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+        </Grid>
+
+        <!-- Боковые панели -->
+        <Grid Grid.Column="1" IsVisible="{Binding IsAnyFormVisible}" Width="320" Margin="16 0 0 0">
+
+            <!-- Форма нового пользователя -->
+            <Border IsVisible="{Binding IsUserFormVisible}"
+                    BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Background="White">
+                <Grid RowDefinitions="Auto, *">
+                    <Border Grid.Row="0" Background="#2C3E50" CornerRadius="8,8,0,0" Padding="16,14">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Text="Новый пользователь"
+                                       Foreground="White" FontWeight="Bold" FontSize="14"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    Background="Transparent" BorderThickness="0" Padding="4"
+                                    Command="{Binding CancelFormCommand}">
+                                <TextBlock Text="✕" Foreground="White" FontSize="14"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" Padding="16">
+                        <StackPanel Spacing="14">
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Логин *" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding NewLogin}"
+                                         PlaceholderText="Введите логин..."
+                                         CornerRadius="6" Padding="10,8"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Пароль *" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding NewPassword}"
+                                         PasswordChar="●"
+                                         PlaceholderText="Введите пароль..."
+                                         CornerRadius="6" Padding="10,8"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Email" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding NewEmail}"
+                                         PlaceholderText="example@school.ru"
+                                         CornerRadius="6" Padding="10,8"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Роль *" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding Roles}"
+                                          SelectedItem="{Binding NewRole}"
+                                          DisplayMemberBinding="{Binding Name}"
+                                          PlaceholderText="Выберите роль..."
+                                          HorizontalAlignment="Stretch"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Сотрудник" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding Employees}"
+                                          SelectedItem="{Binding NewSotrudnik}"
+                                          DisplayMemberBinding="{Binding DisplayText}"
+                                          PlaceholderText="Не привязан (необязательно)"
+                                          HorizontalAlignment="Stretch"/>
+                            </StackPanel>
+
+                            <Border Background="#FDEDEC" BorderBrush="#E74C3C" BorderThickness="1"
+                                    CornerRadius="6" Padding="12,8"
+                                    IsVisible="{Binding FormError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                <TextBlock Text="{Binding FormError}"
+                                           FontSize="12" Foreground="#E74C3C" TextWrapping="Wrap"/>
+                            </Border>
+
+                            <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                    Background="#3498DB" Foreground="White" FontWeight="Bold"
+                                    CornerRadius="6" Padding="0,12"
+                                    Command="{Binding SaveUserCommand}">
+                                <TextBlock Text="Создать пользователя"/>
+                            </Button>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- Форма новой роли -->
+            <Border IsVisible="{Binding IsRoleFormVisible}"
+                    BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Background="White">
+                <Grid RowDefinitions="Auto, *">
+                    <Border Grid.Row="0" Background="#9B59B6" CornerRadius="8,8,0,0" Padding="16,14">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Text="Новая роль"
+                                       Foreground="White" FontWeight="Bold" FontSize="14"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    Background="Transparent" BorderThickness="0" Padding="4"
+                                    Command="{Binding CancelRoleFormCommand}">
+                                <TextBlock Text="✕" Foreground="White" FontSize="14"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" Padding="16">
+                        <StackPanel Spacing="14">
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Название *" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding NewRoleName}"
+                                         PlaceholderText="Например: Учитель"
+                                         CornerRadius="6" Padding="10,8"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Описание" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding NewRoleDescription}"
+                                         PlaceholderText="Краткое описание роли..."
+                                         CornerRadius="6" Padding="10,8"/>
+                            </StackPanel>
+
+                            <!-- Список прав -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Права доступа" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <Border Background="#F8F9FA" CornerRadius="6" Padding="12,8">
+                                    <ItemsControl ItemsSource="{Binding NewRolePermissions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:PermissionItemViewModel">
+                                                <CheckBox IsChecked="{Binding IsChecked}"
+                                                          Content="{Binding Label}"
+                                                          FontSize="12"
+                                                          Margin="0,3"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Border>
+                            </StackPanel>
+
+                            <Border Background="#FDEDEC" BorderBrush="#E74C3C" BorderThickness="1"
+                                    CornerRadius="6" Padding="12,8"
+                                    IsVisible="{Binding RoleFormError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                <TextBlock Text="{Binding RoleFormError}"
+                                           FontSize="12" Foreground="#E74C3C" TextWrapping="Wrap"/>
+                            </Border>
+
+                            <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                    Background="#9B59B6" Foreground="White" FontWeight="Bold"
+                                    CornerRadius="6" Padding="0,12"
+                                    Command="{Binding SaveRoleCommand}">
+                                <TextBlock Text="Создать роль"/>
+                            </Button>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
 </UserControl>

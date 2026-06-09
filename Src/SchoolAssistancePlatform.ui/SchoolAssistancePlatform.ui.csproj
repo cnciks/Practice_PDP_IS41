@@ -7,7 +7,9 @@
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 
-    <RootNamespace>SchoolAssistancePlatform.UI</RootNamespace>    
+    <RootNamespace>SchoolAssistancePlatform.UI</RootNamespace>
+
+    <ApplicationIcon>Assets\Images\school.ico</ApplicationIcon>    
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +39,10 @@
 
   <ItemGroup>
     <AvaloniaResource Remove="school.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Images\school.ico" />
   </ItemGroup>
 
   <ItemGroup>

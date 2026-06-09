@@ -1,27 +1,122 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:SchoolAssistancePlatform.UI.Views.Auth"
+             mc:Ignorable="d"
+             x:Class="SchoolAssistancePlatform.UI.AuthView"
+             x:DataType="vm:AuthViewModel">
 
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    <Grid Background="#F0F4F8">
 
-			 x:Class="SchoolAssistancePlatform.UI.AuthView">
+        <!-- Карточка входа по центру -->
+        <Border HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="White"
+                BorderBrush="#E0E6ED"
+                BorderThickness="1"
+                CornerRadius="14"
+                Width="380"
+                BoxShadow="0 8 32 0 #18000000">
 
-	<StackPanel HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					Spacing="10">
+            <StackPanel Spacing="0">
 
-		<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/school.png"
-				Width="64" Height="64"
-				Margin="10"/>
-		
-		<TextBox PlaceholderText="Логин" Text="{Binding Login}"
-				 Width="300"/>
-		
-		<TextBox PlaceholderText="Пароль" PasswordChar="*" Text="{Binding Password}" />
-		
-		<Button Content="Войти" Command="{Binding LoginCommand}"
-				Width="300"/>
-	</StackPanel>
+                <!-- Шапка с логотипом -->
+                <StackPanel HorizontalAlignment="Center" Spacing="8" Margin="0,32,0,24">
+                    <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/school.png"
+                           Width="64" Height="64"
+                           HorizontalAlignment="Center"/>
+                    <TextBlock Text="МАОУ СОШ №17"
+                               FontSize="18" FontWeight="Bold"
+                               Foreground="#2C3E50"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Система управления школой"
+                               FontSize="12" Foreground="#95A5A6"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Форма -->
+                <StackPanel Spacing="12" Margin="32,0,32,28">
+
+                    <!-- Логин -->
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Логин" FontSize="12" FontWeight="SemiBold"
+                                   Foreground="#555"/>
+                        <Border BorderThickness="1" BorderBrush="#DDDDDD" CornerRadius="8"
+                                Background="White">
+                            <Grid ColumnDefinitions="Auto, *" Margin="12,0">
+                                <TextBlock Text="👤" VerticalAlignment="Center"
+                                           FontSize="14" Foreground="#AAA"/>
+                                <TextBox Grid.Column="1"
+                                         Text="{Binding Login}"
+                                         PlaceholderText="Введите логин"
+                                         Background="Transparent" BorderThickness="0"
+                                         Padding="8,10" FontSize="13"
+                                         VerticalContentAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Пароль -->
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Пароль" FontSize="12" FontWeight="SemiBold"
+                                   Foreground="#555"/>
+                        <Border BorderThickness="1" BorderBrush="#DDDDDD" CornerRadius="8"
+                                Background="White">
+                            <Grid ColumnDefinitions="Auto, *" Margin="12,0">
+                                <TextBlock Text="🔒" VerticalAlignment="Center"
+                                           FontSize="14" Foreground="#AAA"/>
+                                <TextBox Grid.Column="1"
+                                         Text="{Binding Password}"
+                                         PlaceholderText="Введите пароль"
+                                         PasswordChar="●"
+                                         Background="Transparent" BorderThickness="0"
+                                         Padding="8,10" FontSize="13"
+                                         VerticalContentAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Ошибка -->
+                    <Border Background="#FDEDEC" CornerRadius="8" Padding="12,9"
+                            IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="⚠" FontSize="13" Foreground="#E74C3C"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Error}"
+                                       FontSize="12" Foreground="#C0392B"
+                                       VerticalAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Кнопка входа -->
+                    <Button Command="{Binding LoginCommand}"
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                            Background="#2C3E50" Foreground="White"
+                            BorderThickness="0" CornerRadius="8"
+                            Padding="0,12" Margin="0,4,0,0">
+                        <Grid>
+                            <!-- Текст -->
+                            <TextBlock Text="Войти"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       IsVisible="{Binding !IsLoading}"/>
+                            <!-- Загрузка -->
+                            <StackPanel Orientation="Horizontal" Spacing="8"
+                                        HorizontalAlignment="Center"
+                                        IsVisible="{Binding IsLoading}">
+                                <TextBlock Text="Выполняется вход…"
+                                           FontSize="13" Foreground="White"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+
+    </Grid>
 
 </UserControl>

@@ -3,108 +3,150 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using MapsterMapper;
-
 using Microsoft.EntityFrameworkCore;
 
 using SchoolAssistancePlatform.Base;
 using SchoolAssistancePlatform.Base.Entity.School;
+using SchoolAssistancePlatform.framework.Data;
 using SchoolAssistancePlatform.UI.Data;
 
 namespace SchoolAssistancePlatform.UI.Services;
 
-public class GradeJournalService
+public class GradeJournalService(SAPDbContext context)
 {
-	private readonly SAPDbContext _context;
-	private readonly IMapper _mapper;
+	private readonly SAPDbContext _context = context;
 
-	public GradeJournalService(SAPDbContext context, IMapper mapper)
+	/// <summary>
+	/// Возвращает уникальные даты уроков по фильтрам, отсортированные по возрастанию.
+	/// </summary>
+	public async Task<List<DateTime>> GetLessonDatesAsync(
+		long klassID, long? predmetID, DateTime startDate, DateTime endDate)
 	{
-		_context = context;
-		_mapper = mapper;
+		var query = _context.ZhurnalUspevaemosti
+			.Include(j => j.Raspisanie)
+			.Where(j => j.Raspisanie.KlassID == klassID
+				&& j.DataUroka.Date >= startDate.Date
+				&& j.DataUroka.Date <= endDate.Date);
+
+		if(predmetID.HasValue)
+			query = query.Where(j => j.Raspisanie.PredmetID == predmetID.Value);
+
+		return await query
+			.Select(j => j.DataUroka.Date)
+			.Distinct()
+			.OrderBy(d => d)
+			.ToListAsync();
 	}
 
-	public async Task<List<StudentGradeDto>> GetStudentsWithGradesAsync(long klassID, DateTime startDate, DateTime endDate)
+	/// <summary>
+	/// Возвращает учеников класса с оценками по каждой дате.
+	/// </summary>
+	public async Task<List<StudentJournalDto>> GetStudentsWithGradesAsync(
+		long klassID, long? predmetID, DateTime startDate, DateTime endDate)
 	{
 		var students = await _context.Uchenik
-			.Include(u => u.Klass)
 			.Where(u => u.KlassID == klassID)
 			.OrderBy(u => u.Familiia)
 			.ToListAsync();
 
-		var raspisanie = await _context.Raspisaniya
-			.Where(r => r.KlassID == klassID)
-			.ToListAsync();
+		var journalQuery = _context.ZhurnalUspevaemosti
+			.Include(j => j.Raspisanie)
+			.AsNoTracking();
+			//.Where(j => j.Raspisanie.KlassID == klassID
+			//	&& j.DataUroka.Date >= startDate.Date
+			//	&& j.DataUroka.Date <= endDate.Date);
 
-		var result = new List<StudentGradeDto>();
+		if(predmetID.HasValue)
+			journalQuery = journalQuery.Where(j => j.Raspisanie.PredmetID == predmetID.Value);
 
+		var allRecords = await journalQuery.ToListAsync();
+
+		var result = new List<StudentJournalDto>();
 		foreach(var student in students)
 		{
-			var studentDto = new StudentGradeDto
+			var gradesByDate = allRecords
+				.Where(j => j.UchenikID == student.UchenikID)
+				.GroupBy(j => j.DataUroka.Date)
+				.ToDictionary(
+					g => g.Key,
+					g => g.OrderByDescending(j => j.ZapisID).First());
+
+			var validGrades = allRecords
+				.Where(j => j.UchenikID == student.UchenikID && j.Ocenka > 0)
+				.Select(j => j.Ocenka)
+				.ToList();
+
+			result.Add(new StudentJournalDto
 			{
-				StudentID = student.UchenikID,
-				StudentName = $"{student.Familiia} {student.Imya} {student.Otchestvo}".Trim(),
-				Grades = new List<int?>(),
-				AverageGrade = 0
-			};
-
-			foreach(var lesson in raspisanie)
-			{
-				var journal = await _context.ZhurnalUspevaemosti
-					.FirstOrDefaultAsync(j => j.UchenikID == student.UchenikID &&
-											   j.RaspisanieID == lesson.RaspisanieID &&
-											   j.DataUroka.Date >= startDate.Date &&
-											   j.DataUroka.Date <= endDate.Date);
-
-				studentDto.Grades.Add(journal?.Ocenka);
-			}
-
-			studentDto.AverageGrade = await GetStudentAverageGradeAsync(student.UchenikID);
-			result.Add(studentDto);
+				StudentID    = student.UchenikID,
+				StudentName  = $"{student.Familiia} {student.Imya} {student.Otchestvo}".Trim(),
+				GradesByDate = gradesByDate,
+				AverageGrade = validGrades.Count > 0 ? validGrades.Average() : 0,
+			});
 		}
 
 		return result;
 	}
 
-	public async Task<List<DateTime>> GetLessonDatesAsync(long klassID, DateTime startDate, DateTime endDate)
+	/// <summary>
+	/// Сохраняет или обновляет оценку ученика за конкретную дату урока.
+	/// Если ocenka == 0 и запись существует — удаляет её.
+	/// </summary>
+	public async Task UpsertGradeAsync(
+		long studentID, long raspisanieID, DateTime dataUroka, int ocenka)
 	{
-		var dates = await _context.ZhurnalUspevaemosti
-			.Where(j => j.Raspisanie.KlassID == klassID &&
-						j.DataUroka.Date >= startDate.Date &&
-						j.DataUroka.Date <= endDate.Date)
-			.Select(j => j.DataUroka.Date)
-			.Distinct()
-			.OrderBy(d => d)
-			.ToListAsync();
+		var existing = await _context.ZhurnalUspevaemosti
+			.FirstOrDefaultAsync(j =>
+				j.UchenikID      == studentID &&
+				j.RaspisanieID   == raspisanieID &&
+				j.DataUroka.Date == dataUroka.Date);
 
-		return dates;
-	}
-
-	public async Task UpdateGradeAsync(long studentID, long raspisanieID, int grade)
-	{
-		var journal = await _context.ZhurnalUspevaemosti
-			.FirstOrDefaultAsync(j => j.UchenikID == studentID && j.RaspisanieID == raspisanieID);
-
-		if(journal != null)
+		if(existing is not null)
 		{
-			journal.Ocenka = grade;
-			_context.ZhurnalUspevaemosti.Update(journal);
-		}
-		else
-		{
-			var newJournal = new ZhurnalUspevaemostiEntity
+			if(ocenka == 0)
+				_context.ZhurnalUspevaemosti.Remove(existing);
+			else
 			{
-				UchenikID = studentID,
-				RaspisanieID = raspisanieID,
-				DataUroka = DateTime.Now,
-				Ocenka = grade,
-				TipOcenki = "Текущая",
-				Poseschaemost = true
-			};
-			await _context.ZhurnalUspevaemosti.AddAsync(newJournal);
+				existing.Ocenka = ocenka;
+				_context.ZhurnalUspevaemosti.Update(existing);
+			}
+		}
+		else if(ocenka > 0)
+		{
+			await _context.ZhurnalUspevaemosti.AddAsync(new ZhurnalUspevaemostiEntity
+			{
+				UchenikID     = studentID,
+				RaspisanieID  = raspisanieID,
+				DataUroka     = dataUroka,
+				Ocenka        = ocenka,
+				TipOcenki     = "Текущая",
+				Poseschaemost = true,
+			});
 		}
 
 		await _context.SaveChangesAsync();
+	}
+
+	public async Task<IEnumerable<UchebniyPredmetDto>> GetSubjectsByKlassAsync(long klassID)
+	{
+		var predmetIDs = await _context.Raspisanie
+			.Where(r => r.KlassID == klassID)
+			.Select(r => r.PredmetID)
+			.Distinct()
+			.ToListAsync();
+
+		var predmety = await _context.UchebniyPredmet
+			.Where(p => predmetIDs.Contains(p.PredmetID))
+			.OrderBy(p => p.Nazvanie)
+			.ToListAsync();
+
+		return predmety.Select(p => new UchebniyPredmetDto
+		{
+			PredmetID    = p.PredmetID,
+			Nazvanie     = p.Nazvanie,
+			Sokrashenie  = p.Sokrashenie,
+			ChasovNedelyu = p.ChasovNedelyu,
+		});
 	}
 
 	public async Task<double> GetStudentAverageGradeAsync(long studentID)
@@ -114,38 +156,6 @@ public class GradeJournalService
 			.Select(j => j.Ocenka)
 			.ToListAsync();
 
-		if(!grades.Any())
-			return 0;
-
-		return grades.Average();
-	}
-
-	public async Task SaveStudentNameAsync(long studentID, string newName)
-	{
-		var student = await _context.Uchenik
-			.FirstOrDefaultAsync(u => u.UchenikID == studentID);
-
-		if(student != null)
-		{
-			var nameParts = newName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-			student.Familiia = nameParts.Length > 0 ? nameParts[0] : student.Familiia;
-			student.Imya = nameParts.Length > 1 ? nameParts[1] : student.Imya;
-			student.Otchestvo = nameParts.Length > 2 ? nameParts[2] : student.Otchestvo;
-
-			_context.Uchenik.Update(student);
-			await _context.SaveChangesAsync();
-		}
-	}
-
-	public async Task RemoveStudentAsync(long studentID)
-	{
-		var student = await _context.Uchenik
-			.FirstOrDefaultAsync(u => u.UchenikID == studentID);
-
-		if(student != null)
-		{
-			_context.Uchenik.Remove(student);
-			await _context.SaveChangesAsync();
-		}
+		return grades.Count > 0 ? grades.Average() : 0;
 	}
 }

@@ -1,56 +1,38 @@
-﻿using ReactiveUI;
+using ReactiveUI;
 
 using SchoolAssistancePlatform.framework.Data;
-using SchoolAssistancePlatform.UI.Services;
 
 namespace SchoolAssistancePlatform.UI.Views.Pages.ClassesPage;
 
-public class ClassItemViewModel : ReactiveObject
+internal sealed class ClassItemViewModel : ReactiveObject
 {
-	private readonly ClassService _classService;
+	public long   KlassID       { get; init; }
+	public string Name          { get; init; } = string.Empty;
+	public int    GodObucheniya { get; init; }
+	public long   TeacherId     { get; init; }
+	public long   PlanID        { get; init; }
+	public string Teacher       { get; init; } = string.Empty;
+	public int    StudentsCount { get; init; }
+	public string PlanName      { get; init; } = string.Empty;
 
-	private KlassDto _class;
-	private string _name;
-	private int _studentsCount;
-	private string _teacher;
-	private int _year;
-
-	public long Id => _class?.KlassID ?? 0;
-	public long TeacherId => _class?.KlassRukovoditelID ?? 0;
-	public long PlanId => _class?.PlanID ?? 0;
-
-	public string Name
+	public string BadgeColor => (Name.Length > 0 ? Name[0] : '0') switch
 	{
-		get => _name;
-		set => this.RaiseAndSetIfChanged(ref _name, value);
-	}
+		'1' or '2' or '3' or '4' => "#3498DB",
+		'5' or '6'               => "#9B59B6",
+		'7' or '8'               => "#27AE60",
+		'9'                      => "#E67E22",
+		_                        => "#E74C3C",
+	};
 
-	public int StudentsCount
+	public static ClassItemViewModel FromData(KlassDto dto, int studentsCount, string teacher) => new()
 	{
-		get => _studentsCount;
-		set => this.RaiseAndSetIfChanged(ref _studentsCount, value);
-	}
-
-	public string Teacher
-	{
-		get => _teacher;
-		set => this.RaiseAndSetIfChanged(ref _teacher, value);
-	}
-
-	public int Year
-	{
-		get => _year;
-		set => this.RaiseAndSetIfChanged(ref _year, value);
-	}
-
-	public ClassItemViewModel(KlassDto klass, int studentsCount, string teacherName, ClassService classService)
-	{
-		_class = klass;
-		_classService = classService;
-
-		Name = klass.NomerKlassa;
-		Year = klass.GodObucheniya;
-		StudentsCount = studentsCount;
-		Teacher = teacherName;
-	}
+		KlassID       = dto.KlassID,
+		Name          = dto.NomerKlassa ?? string.Empty,
+		GodObucheniya = dto.GodObucheniya,
+		TeacherId     = dto.KlassRukovoditelID,
+		PlanID        = dto.PlanID,
+		Teacher       = teacher,
+		StudentsCount = studentsCount,
+		PlanName      = dto.PlanNazvanie ?? string.Empty,
+	};
 }

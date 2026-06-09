@@ -2,140 +2,282 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-
+             xmlns:vm="clr-namespace:SchoolAssistancePlatform.UI.Views.Pages.CommandsPage"
              mc:Ignorable="d"
+             x:Class="SchoolAssistancePlatform.UI.Views.Pages.CommandsPage.CommandsPageView"
+             x:DataType="vm:CommandsPageViewModel">
 
-             x:Class="SchoolAssistancePlatform.UI.CommandsPageView">
+    <Grid RowDefinitions="Auto, *" Margin="20">
 
-    
-    <Grid RowDefinitions="Auto, *"
-          Margin="20">
+        <!-- Панель фильтров и кнопки -->
+        <Grid ColumnDefinitions="*, Auto" Margin="0 0 0 16">
 
-		<Grid ColumnDefinitions="*, Auto"
-			  Margin="0 0 0 20">
+            <Border BorderThickness="1" BorderBrush="#CCCCCC" Margin="0 0 16 0" CornerRadius="3">
+                <Grid VerticalAlignment="Center" ColumnDefinitions="*, Auto">
+                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Margin="16 0">
 
-			<Border BorderThickness="1"
-					BorderBrush="#CCCCCC"
-					Margin="0 0 20 0"
-					CornerRadius="3">
-                <Grid VerticalAlignment="Center"
-                      ColumnDefinitions="*, Auto">                    
-				    <StackPanel VerticalAlignment="Center"
-				    			Orientation="Horizontal"
-				    			Margin="20 0">
-				    	<ComboBox PlaceholderText="Тип"
-				    			  Width="180"
-				    			  Margin="0 0 20 0"/>
-				    	<ComboBox PlaceholderText="Дата"
-				    			  Width="180"
-				    			  Margin="0 0 20 0"/>
-				    	<ComboBox PlaceholderText="Статус"
-				    			  Width="180"/>
-				    </StackPanel>
+                        <ComboBox PlaceholderText="Тип приказа"
+                                  Width="180"
+                                  Margin="0 0 16 0"
+                                  ItemsSource="{Binding Types}"
+                                  SelectedItem="{Binding SelectedType}"/>
 
-                    
-				    <ToggleButton x:Name="notification"
-				    			  Background="Transparent"
+                        <TextBox PlaceholderText="🔍 Поиск по номеру, содержанию, сотруднику..."
+                                 Width="340"
+                                 Text="{Binding SearchText}"
+                                 CornerRadius="4"
+                                 Padding="8,5"/>
+
+                    </StackPanel>
+
+                    <ToggleButton Background="Transparent"
                                   IsChecked="{Binding ApplyFilter}"
-				    			  Grid.Column="1">
-				    	<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/filter.png"
-				    		Width="32" Height="32"
-				    		Margin="10"/>
-				    </ToggleButton>
+                                  Grid.Column="1">
+                        <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/filter.png"
+                               Width="32" Height="32" Margin="10"/>
+                    </ToggleButton>
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                <Button Background="Transparent" BorderThickness="1" BorderBrush="#CCCCCC"
+                        Command="{Binding CreateCommand}">
+                    <Grid ColumnDefinitions="Auto, Auto" Margin="8 0">
+                        <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/edit.png"
+                               Width="28" Height="28" Margin="6"/>
+                        <TextBlock Text="Создать" FontWeight="Bold" Grid.Column="1" VerticalAlignment="Center"/>
+                    </Grid>
+                </Button>
+                <Button Background="Transparent" BorderThickness="1" BorderBrush="#CCCCCC"
+                        Command="{Binding ExportCommand}">
+                    <Grid ColumnDefinitions="Auto, Auto" Margin="8 0">
+                        <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/pdf-file.png"
+                               Width="28" Height="28" Margin="6"/>
+                        <TextBlock Text="Экспорт" FontWeight="Bold" Grid.Column="1" VerticalAlignment="Center"/>
+                    </Grid>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Основная область: таблица + панель деталей -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, Auto">
+
+            <!-- Таблица приказов -->
+            <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Background="White">
+                <Grid RowDefinitions="Auto, *">
+
+                    <!-- Заголовок таблицы -->
+                    <Border Grid.Row="0" Background="#34495E" CornerRadius="8,8,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="50"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.Styles>
+                                <Style Selector="TextBlock">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Padding" Value="14,10"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </Grid.Styles>
+                            <TextBlock Grid.Column="0" Text="Номер"/>
+                            <TextBlock Grid.Column="1" Text="Дата"/>
+                            <TextBlock Grid.Column="2" Text="Тип"/>
+                            <TextBlock Grid.Column="3" Text="Содержание"/>
+                            <TextBlock Grid.Column="4" Text="Сотрудник"/>
+                            <TextBlock Grid.Column="5" Text=""/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Строки -->
+                    <ScrollViewer Grid.Row="1">
+                        <ListBox ItemsSource="{Binding Documents}"
+                                 BorderThickness="0"
+                                 Background="Transparent">
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="#F8F9FA"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="#F0F3F4"/>
+                                </Style>
+                            </ListBox.Styles>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:PrikazViewModel">
+                                    <Border BorderBrush="#F0F0F0" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="140"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="180"/>
+                                                <ColumnDefinition Width="50"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Nomer}"
+                                                       Padding="14,10"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="13"
+                                                       FontWeight="SemiBold"/>
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding DateText}"
+                                                       Padding="14,10"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="12"
+                                                       Foreground="#666"/>
+
+                                            <!-- Бейдж типа -->
+                                            <Border Grid.Column="2"
+                                                    Background="{Binding BadgeColor}"
+                                                    CornerRadius="12"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Center"
+                                                    Padding="10,3"
+                                                    Margin="14,0">
+                                                <TextBlock Text="{Binding Tip}"
+                                                           FontSize="11"
+                                                           FontWeight="Bold"
+                                                           Foreground="White"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Column="3"
+                                                       Text="{Binding Soderzhanie}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="12"
+                                                       Foreground="#555"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,0,10,0"/>
+
+                                            <TextBlock Grid.Column="4"
+                                                       Text="{Binding Sotrudnik}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="12"
+                                                       Foreground="#555"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,0,10,0"/>
+
+                                            <Button Grid.Column="5"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Padding="6"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    Command="{Binding $parent[ListBox].((vm:CommandsPageViewModel)DataContext).SelectPrikazCommand}"
+                                                    CommandParameter="{Binding}">
+                                                <TextBlock Text="›" FontSize="18" Foreground="#7F8C8D"/>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
 
                 </Grid>
-			</Border>
+            </Border>
 
-            <StackPanel Orientation="Horizontal"
-                        Grid.Column="1">
-                
+            <!-- Панель деталей -->
+            <Border Grid.Column="1"
+                    IsVisible="{Binding IsDetailsVisible}"
+                    Width="320"
+                    Margin="16 0 0 0"
+                    BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Background="White">
+                <Grid RowDefinitions="Auto, *">
 
-			    <Button HorizontalAlignment="Stretch"
-			    		HorizontalContentAlignment="Stretch"
-			    		Background="Transparent"
-			    		BorderThickness="1"
-			    		BorderBrush="#CCCCCC"
-			    		Command="{Binding EditCurriculumCommand}">
-			    
-			    	<Grid ColumnDefinitions="Auto, *"
-			    		  HorizontalAlignment="Stretch"
-			    		  Margin="10 0">
-			    
-			    		 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/edit.png"
-			    				Width="32" Height="32"
-			    				HorizontalAlignment="Center"
-			    				Margin="10"/>
-			    
-			    		<TextBlock Text="Создать"
-			    				   FontWeight="Bold"
-			    				   Grid.Column="1"
-			    				   VerticalAlignment="Center"/>
-			    	</Grid>
-			    
-			    </Button>
-                
+                    <!-- Шапка панели -->
+                    <Border Grid.Row="0" Background="#34495E" CornerRadius="8,8,0,0" Padding="16,12">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Text="Детали приказа"
+                                       Foreground="White"
+                                       FontWeight="Bold"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="4"
+                                    Command="{Binding CloseDetailsCommand}">
+                                <TextBlock Text="✕" Foreground="White" FontSize="14"/>
+                            </Button>
+                        </Grid>
+                    </Border>
 
-			    <Button HorizontalAlignment="Stretch"
-			    		HorizontalContentAlignment="Stretch"
-			    		Background="Transparent"
-			    		BorderThickness="1"
-			    		BorderBrush="#CCCCCC"
-			    		Command="{Binding EditCurriculumCommand}">
-			    
-			    	<Grid ColumnDefinitions="Auto, *"
-			    		  HorizontalAlignment="Stretch"
-			    		  Margin="10 0">
-			    
-			    		 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/pdf-file.png"
-			    				Width="32" Height="32"
-			    				HorizontalAlignment="Center"
-			    				Margin="10"/>
-			    
-			    		<TextBlock Text="Экспорт"
-			    				   FontWeight="Bold"
-			    				   Grid.Column="1"
-			    				   VerticalAlignment="Center"/>
-			    	</Grid>
-			    
-			    </Button>
-                
-            </StackPanel>
+                    <!-- Содержимое деталей -->
+                    <ScrollViewer Grid.Row="1" Padding="16">
+                        <StackPanel Spacing="14"
+                                    DataContext="{Binding SelectedPrikaz}">
 
-		</Grid>
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Номер приказа" FontSize="11" Foreground="#999"/>
+                                <TextBlock Text="{Binding Nomer}" FontSize="14" FontWeight="SemiBold"/>
+                            </StackPanel>
 
-        <Border Background="White" Padding="15"
-                Grid.Row="1">
-            <StackPanel Spacing="10">
-                
-                <TextBlock Text="Документы" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
-                
-                <Grid ColumnDefinitions="60,100,*,100,100" Background="#F0F0F0">
-                    <TextBlock Text="№" FontWeight="Bold" Grid.Column="0" Margin="10"/>
-                    <TextBlock Text="Дата" FontWeight="Bold" Grid.Column="1" Margin="10"/>
-                    <TextBlock Text="Название" FontWeight="Bold" Grid.Column="2" Margin="10"/>
-                    <TextBlock Text="Тип" FontWeight="Bold" Grid.Column="3" Margin="10"/>
-                    <TextBlock Text="Статус" FontWeight="Bold" Grid.Column="4" Margin="10"/>
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Дата" FontSize="11" Foreground="#999"/>
+                                <TextBlock Text="{Binding DateText}" FontSize="14"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Тип приказа" FontSize="11" Foreground="#999"/>
+                                <Border Background="{Binding BadgeColor}"
+                                        CornerRadius="12"
+                                        HorizontalAlignment="Left"
+                                        Padding="12,4">
+                                    <TextBlock Text="{Binding Tip}"
+                                               FontSize="12"
+                                               FontWeight="Bold"
+                                               Foreground="White"/>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Сотрудник" FontSize="11" Foreground="#999"/>
+                                <TextBlock Text="{Binding Sotrudnik}" FontSize="14" TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Содержание" FontSize="11" Foreground="#999"/>
+                                <TextBlock Text="{Binding Soderzhanie}"
+                                           FontSize="13"
+                                           TextWrapping="Wrap"
+                                           Foreground="#333"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="4" IsVisible="{Binding HasFile}">
+                                <TextBlock Text="Файл" FontSize="11" Foreground="#999"/>
+                                <TextBlock Text="{Binding FileLink}"
+                                           FontSize="12"
+                                           Foreground="#3498DB"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </ScrollViewer>
+
                 </Grid>
+            </Border>
 
-                <ItemsControl ItemsSource="{Binding Documents}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="10,8">
-                                <Grid ColumnDefinitions="60,100,*,100,100">
-                                    <TextBlock Grid.Column="0" Text="{Binding Number}"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Date}"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding Name}"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding Type}"/>
-                                    <TextBlock Grid.Column="4" Text="{Binding Status}"/>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                
-            </StackPanel>
-        </Border>
-
+        </Grid>
 
     </Grid>
 

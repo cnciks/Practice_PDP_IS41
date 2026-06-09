@@ -2,6 +2,7 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ws="clr-namespace:SchoolAssistancePlatform.UI.Views.WorkSpace"
 
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 
@@ -62,21 +63,65 @@
 							Margin="10"/>
 					</ToggleButton>
 
-					<Button Background="Transparent"
-							Grid.Column="2">
+					<Button x:Name="userButton"
+							Background="Transparent"
+							Grid.Column="2"
+							Command="{Binding ToggleUserMenuCommand}">
 						<StackPanel Orientation="Horizontal"
 									HorizontalAlignment="Center">
-							
+
 							<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/user.png"
 								Width="32" Height="32"
 								Margin="10"/>
 
 							<TextBlock Text="{Binding WorkSpaceOwnerName}"
 									   VerticalAlignment="Center"
-									   Margin="10"/>
+									   Margin="0,0,6,0"/>
+
+							<TextBlock Text="▾" FontSize="11" Foreground="#888"
+									   VerticalAlignment="Center" Margin="0,2,10,0"/>
 
 						</StackPanel>
 					</Button>
+
+					<Popup IsOpen="{Binding IsUserMenuOpen}"
+						   PlacementTarget="{Binding #userButton}"
+						   Placement="Bottom"
+						   IsLightDismissEnabled="True"
+						   Grid.Column="2">
+						<Border Background="White"
+								BorderBrush="#E0E0E0" BorderThickness="1"
+								CornerRadius="8" Margin="0,4,0,0"
+								BoxShadow="0 4 12 0 #22000000">
+							<StackPanel MinWidth="180">
+
+								<!-- Заголовок -->
+								<Border BorderBrush="#F0F0F0" BorderThickness="0,0,0,1" Padding="14,10">
+									<StackPanel Spacing="2">
+										<TextBlock Text="{Binding WorkSpaceOwnerName}"
+												   FontWeight="SemiBold" FontSize="13" Foreground="#2C3E50"/>
+										<TextBlock Text="Текущий пользователь"
+												   FontSize="11" Foreground="#AAA"/>
+									</StackPanel>
+								</Border>
+
+								<!-- Выход -->
+								<Button Command="{Binding LogoutCommand}"
+										Background="Transparent" BorderThickness="0"
+										HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+										Padding="14,10">
+									<StackPanel Orientation="Horizontal" Spacing="10">
+										<TextBlock Text="⇤" FontSize="15" Foreground="#E74C3C"
+												   VerticalAlignment="Center"/>
+										<TextBlock Text="Выйти из системы"
+												   FontSize="13" Foreground="#E74C3C"
+												   VerticalAlignment="Center"/>
+									</StackPanel>
+								</Button>
+
+							</StackPanel>
+						</Border>
+					</Popup>
 
                     <Popup IsOpen="{Binding #notification.IsChecked}"
                            Width="300" Height="300"
@@ -101,16 +146,52 @@
 			</Grid>
 		</Border>
 
-		<Grid ColumnDefinitions="300, *"
+		<Grid ColumnDefinitions="240, *"
 			  Grid.Row="1">
+
 			<ListBox ItemsSource="{Binding MenuItems}"
-				 SelectedItem="{Binding SelectedMenuItem}"
-				 DisplayMemberBinding="{Binding Page.Title}">
+					 SelectedItem="{Binding SelectedMenuItem}"
+					 Background="#F8F9FA"
+					 BorderThickness="0,0,1,0"
+					 BorderBrush="#E0E0E0"
+					 Padding="8,6">
+
+				<ListBox.Styles>
+					<Style Selector="ListBoxItem">
+						<Setter Property="Padding" Value="0"/>
+						<Setter Property="Margin" Value="0,2"/>
+						<Setter Property="CornerRadius" Value="8"/>
+					</Style>
+					<Style Selector="ListBoxItem /template/ ContentPresenter">
+						<Setter Property="Background" Value="Transparent"/>
+					</Style>
+					<Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+						<Setter Property="Background" Value="#EAEEF2"/>
+					</Style>
+					<Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+						<Setter Property="Background" Value="#DDE8F5"/>
+					</Style>
+				</ListBox.Styles>
+
+				<ListBox.ItemTemplate>
+					<DataTemplate x:DataType="ws:MenuItem">
+						<StackPanel Orientation="Horizontal" Spacing="10" Margin="10,8">
+							<Image Source="{Binding Page.Icon}"
+								   Width="20" Height="20"
+								   VerticalAlignment="Center"/>
+							<TextBlock Text="{Binding Page.Title}"
+									   FontSize="13"
+									   VerticalAlignment="Center"
+									   Foreground="#2C3E50"/>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+
 			</ListBox>
 
-		<ContentControl
-			Grid.Column="1"
-			Content="{Binding SelectedMenuItem.Control}" />
+			<ContentControl
+				Grid.Column="1"
+				Content="{Binding SelectedMenuItem.Control}" />
 		</Grid>
 
 	</Grid>

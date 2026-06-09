@@ -50,7 +50,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 
 		var entity = dto.Adapt<RaspisanieEntity>();
 
-		await _context.Raspisaniya.AddAsync(entity);
+		await _context.Raspisanie.AddAsync(entity);
 		await _context.SaveChangesAsync();
 
 		return await GetByIdAsync(entity.RaspisanieID);
@@ -63,7 +63,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// <returns>DTO расписания или null, если не найдено</returns>
 	public async Task<RaspisanieDto> GetByIdAsync(long id)
 	{
-		var entity = await _context.Raspisaniya
+		var entity = await _context.Raspisanie
 			.Include(r => r.Klass)
 			.Include(r => r.UchebniyPredmet)
 			.Include(r => r.Sotrudnik)
@@ -78,7 +78,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// <returns>Коллекция DTO всех записей расписания</returns>
 	public async Task<IEnumerable<RaspisanieDto>> GetAllAsync()
 	{
-		var entities = await _context.Raspisaniya
+		var entities = await _context.Raspisanie
 			.Include(r => r.Klass)
 			.Include(r => r.UchebniyPredmet)
 			.Include(r => r.Sotrudnik)
@@ -96,7 +96,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// <returns>Коллекция DTO записей расписания для класса</returns>
 	public async Task<IEnumerable<RaspisanieDto>> GetByKlassAsync(long klassID)
 	{
-		var entities = await _context.Raspisaniya
+		var entities = await _context.Raspisanie
 			.Include(r => r.Klass)
 			.Include(r => r.UchebniyPredmet)
 			.Include(r => r.Sotrudnik)
@@ -115,7 +115,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// <returns>Коллекция DTO записей расписания преподавателя</returns>
 	public async Task<IEnumerable<RaspisanieDto>> GetBySotrudnikAsync(long sotrudnikID)
 	{
-		var entities = await _context.Raspisaniya
+		var entities = await _context.Raspisanie
 			.Include(r => r.Klass)
 			.Include(r => r.UchebniyPredmet)
 			.Include(r => r.Sotrudnik)
@@ -134,7 +134,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// <returns>Коллекция DTO записей расписания на указанный день</returns>
 	public async Task<IEnumerable<RaspisanieDto>> GetByDenNedeliAsync(long denNedeli)
 	{
-		var entities = await _context.Raspisaniya
+		var entities = await _context.Raspisanie
 			.Include(r => r.Klass)
 			.Include(r => r.UchebniyPredmet)
 			.Include(r => r.Sotrudnik)
@@ -153,7 +153,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// <returns>Коллекция DTO записей расписания класса на указанный день</returns>
 	public async Task<IEnumerable<RaspisanieDto>> GetByKlassAndDenAsync(long klassID, long denNedeli)
 	{
-		var entities = await _context.Raspisaniya
+		var entities = await _context.Raspisanie
 			.Include(r => r.Klass)
 			.Include(r => r.UchebniyPredmet)
 			.Include(r => r.Sotrudnik)
@@ -179,7 +179,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// </exception>
 	public async Task<RaspisanieDto> UpdateAsync(long id, RaspisanieDto dto)
 	{
-		var existing = await _context.Raspisaniya
+		var existing = await _context.Raspisanie
 			.Include(r => r.Klass)
 			.Include(r => r.UchebniyPredmet)
 			.Include(r => r.Sotrudnik)
@@ -208,7 +208,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 			throw new InvalidOperationException($"Расписание для класса {klass.NomerKlassa} на {GetDayName(dto.DenNedeli)} {dto.NomerUroka} урок уже существует");
 
 		dto.Adapt(existing);
-		_context.Raspisaniya.Update(existing);
+		_context.Raspisanie.Update(existing);
 		await _context.SaveChangesAsync();
 
 		return await GetByIdAsync(id);
@@ -221,13 +221,13 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// <returns>true - запись удалена, false - запись не найдена</returns>
 	public async Task<bool> DeleteAsync(long id)
 	{
-		var entity = await _context.Raspisaniya
+		var entity = await _context.Raspisanie
 			.FirstOrDefaultAsync(r => r.RaspisanieID == id);
 
 		if(entity == null)
 			return false;
 
-		_context.Raspisaniya.Remove(entity);
+		_context.Raspisanie.Remove(entity);
 		await _context.SaveChangesAsync();
 		return true;
 	}
@@ -239,7 +239,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// <returns>true - запись существует, false - не найдена</returns>
 	public async Task<bool> ExistsAsync(long id)
 	{
-		return await _context.Raspisaniya
+		return await _context.Raspisanie
 			.AnyAsync(r => r.RaspisanieID == id);
 	}
 
@@ -253,7 +253,7 @@ public sealed class RaspisaniyaRepository(SAPDbContext context) : IRaspisanieRep
 	/// <returns>true - дубликат существует, false - дубликатов нет</returns>
 	public async Task<bool> IsDuplicateScheduleAsync(long klassID, long denNedeli, short nomerUroka, long? excludeId = null)
 	{
-		var query = _context.Raspisaniya
+		var query = _context.Raspisanie
 			.Where(r => r.KlassID == klassID && r.DenNedeli == denNedeli && r.NomerUroka == nomerUroka);
 
 		if(excludeId.HasValue)

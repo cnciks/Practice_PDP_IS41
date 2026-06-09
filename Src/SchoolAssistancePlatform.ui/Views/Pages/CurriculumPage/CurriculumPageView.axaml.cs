@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace SchoolAssistancePlatform.UI;
+namespace SchoolAssistancePlatform.UI.Views.Pages.CurriculumPage;
 
 public partial class CurriculumPageView : UserControl
 {

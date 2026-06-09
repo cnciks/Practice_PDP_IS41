@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace SchoolAssistancePlatform.UI;
+namespace SchoolAssistancePlatform.UI.Views.Pages.SchedulePage;
 
 public partial class SchedulePageView : UserControl
 {

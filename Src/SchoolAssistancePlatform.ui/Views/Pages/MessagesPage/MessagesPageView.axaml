@@ -2,7 +2,340 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SchoolAssistancePlatform.UI.MessagesPageView">
-  MessagesPageView
+             xmlns:vm="clr-namespace:SchoolAssistancePlatform.UI.Views.Pages.MessagesPage"
+             mc:Ignorable="d"
+             x:Class="SchoolAssistancePlatform.UI.Views.Pages.MessagesPage.MessagesPageView"
+             x:DataType="vm:MessagesPageViewModel">
+
+    <Grid ColumnDefinitions="280, *" Margin="20">
+
+        <!-- Левая панель: вкладки + список -->
+        <Grid RowDefinitions="Auto, Auto, *" Margin="0 0 16 0">
+
+            <!-- Кнопка Написать -->
+            <Button Grid.Row="0"
+                    HorizontalAlignment="Stretch"
+                    Background="#3498DB"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    FontSize="14"
+                    CornerRadius="8"
+                    Padding="0,12"
+                    Margin="0 0 0 12"
+                    Command="{Binding ComposeCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                    <TextBlock Text="✏" FontSize="16" VerticalAlignment="Center"/>
+                    <TextBlock Text="Написать" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <!-- Вкладки -->
+            <Border Grid.Row="1"
+                    Background="#F4F6F8"
+                    CornerRadius="8"
+                    Padding="4"
+                    Margin="0 0 0 12">
+                <StackPanel Orientation="Vertical" Spacing="2">
+                    <Button HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="10,8"
+                            CornerRadius="6"
+                            Command="{Binding SwitchTabCommand}"
+                            CommandParameter="inbox">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="📥" FontSize="14"/>
+                            <TextBlock Text="Входящие" FontSize="13" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="10,8"
+                            CornerRadius="6"
+                            Command="{Binding SwitchTabCommand}"
+                            CommandParameter="outbox">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="📤" FontSize="14"/>
+                            <TextBlock Text="Отправленные" FontSize="13" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="10,8"
+                            CornerRadius="6"
+                            Command="{Binding SwitchTabCommand}"
+                            CommandParameter="unread">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="🔵" FontSize="14"/>
+                            <TextBlock Text="Непрочитанные" FontSize="13" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <!-- Поиск + список -->
+            <Grid Grid.Row="2" RowDefinitions="Auto, *">
+                <TextBox Grid.Row="0"
+                         PlaceholderText="🔍 Поиск..."
+                         Text="{Binding SearchText}"
+                         CornerRadius="6"
+                         Padding="10,7"
+                         Margin="0 0 0 8"/>
+
+                <ScrollViewer Grid.Row="1">
+                    <ListBox ItemsSource="{Binding Messages}"
+                             BorderThickness="0"
+                             Background="Transparent">
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0 0 0 4"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="MinHeight" Value="0"/>
+                            </Style>
+                            <Style Selector="ListBoxItem /template/ ContentPresenter">
+                                <Setter Property="Padding" Value="0"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </ListBox.Styles>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:MessageViewModel">
+                                <Border Background="White"
+                                        BorderBrush="#E8ECF0"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="12,10">
+                                    <Button Background="Transparent"
+                                            BorderThickness="0"
+                                            Padding="0"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            Command="{Binding $parent[ListBox].((vm:MessagesPageViewModel)DataContext).OpenMessageCommand}"
+                                            CommandParameter="{Binding}">
+                                        <Grid ColumnDefinitions="8, *" RowDefinitions="Auto, Auto">
+
+                                            <!-- Индикатор непрочитанного -->
+                                            <Ellipse Grid.Column="0" Grid.RowSpan="2"
+                                                     Width="6" Height="6"
+                                                     Fill="{Binding DotColor}"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0 0 8 0"/>
+
+                                            <!-- Отправитель + дата -->
+                                            <Grid Grid.Column="1" Grid.Row="0"
+                                                  ColumnDefinitions="*, Auto">
+                                                <TextBlock Text="{Binding OtpravitelFIO}"
+                                                           FontWeight="{Binding FontWeight}"
+                                                           FontSize="13"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding DateShort}"
+                                                           FontSize="11"
+                                                           Foreground="#999"/>
+                                            </Grid>
+
+                                            <!-- Тема + превью -->
+                                            <StackPanel Grid.Column="1" Grid.Row="1" Spacing="2" Margin="0 4 0 0">
+                                                <TextBlock Text="{Binding Tema}"
+                                                           FontSize="12"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="#444"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding TextPreview}"
+                                                           FontSize="11"
+                                                           Foreground="#999"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </Button>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>
+
+        </Grid>
+
+        <!-- Правая панель: детали / форма написания / пусто -->
+        <Grid Grid.Column="1">
+
+            <!-- Пустое состояние -->
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Spacing="12"
+                        IsVisible="{Binding !IsDetailsVisible}">
+                <TextBlock Text="✉" FontSize="48" HorizontalAlignment="Center" Foreground="#D0D0D0"/>
+                <TextBlock Text="Выберите сообщение для просмотра"
+                           FontSize="14"
+                           Foreground="#AAAAAA"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Просмотр сообщения -->
+            <Border IsVisible="{Binding IsDetailsVisible}"
+                    Background="White"
+                    BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                <Grid RowDefinitions="Auto, *" DataContext="{Binding SelectedMessage}">
+
+                    <!-- Шапка -->
+                    <Border Grid.Row="0" Background="#F8F9FA"
+                            BorderBrush="#E8ECF0" BorderThickness="0,0,0,1"
+                            CornerRadius="8,8,0,0" Padding="20,14">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{Binding Tema}"
+                                           FontSize="17"
+                                           FontWeight="Bold"
+                                           Foreground="#2C3E50"/>
+                                <StackPanel Orientation="Horizontal" Spacing="16">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="От:" FontSize="12" Foreground="#999"/>
+                                        <TextBlock Text="{Binding OtpravitelFIO}" FontSize="12" Foreground="#555"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="Кому:" FontSize="12" Foreground="#999"/>
+                                        <TextBlock Text="{Binding PoluchatelFIO}" FontSize="12" Foreground="#555"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="Дата:" FontSize="12" Foreground="#999"/>
+                                        <TextBlock Text="{Binding DateText}" FontSize="12" Foreground="#555"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                <Border Background="{Binding BadgeColor}"
+                                        CornerRadius="12"
+                                        Padding="10,3"
+                                        VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding TipPoluchatelya}"
+                                               FontSize="11"
+                                               FontWeight="Bold"
+                                               Foreground="White"/>
+                                </Border>
+                                <Button Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="6"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding $parent[Grid].((vm:MessagesPageViewModel)DataContext).DeleteCommand}"
+                                        CommandParameter="{Binding}">
+                                    <TextBlock Text="🗑" FontSize="16"/>
+                                </Button>
+                                <Button Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="6"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding $parent[Grid].((vm:MessagesPageViewModel)DataContext).CloseMessageCommand}">
+                                    <TextBlock Text="✕" FontSize="14" Foreground="#999"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Текст сообщения -->
+                    <ScrollViewer Grid.Row="1" Padding="20">
+                        <TextBlock Text="{Binding Text}"
+                                   FontSize="14"
+                                   Foreground="#333"
+                                   TextWrapping="Wrap"
+                                   LineHeight="22"/>
+                    </ScrollViewer>
+
+                </Grid>
+            </Border>
+
+            <!-- Форма написания -->
+            <Border IsVisible="{Binding IsComposeVisible}"
+                    Background="White"
+                    BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                <Grid RowDefinitions="Auto, *" DataContext="{Binding Compose}">
+
+                    <!-- Шапка -->
+                    <Border Grid.Row="0" Background="#34495E"
+                            CornerRadius="8,8,0,0" Padding="20,14">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Text="Новое сообщение"
+                                       Foreground="White"
+                                       FontWeight="Bold"
+                                       FontSize="15"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="4"
+                                    Command="{Binding $parent[Grid].((vm:MessagesPageViewModel)DataContext).CancelComposeCommand}">
+                                <TextBlock Text="✕" Foreground="White" FontSize="14"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Поля -->
+                    <ScrollViewer Grid.Row="1" Padding="20">
+                        <StackPanel Spacing="14">
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Получатель" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding Recipients}"
+                                          SelectedItem="{Binding SelectedRecipient}"
+                                          DisplayMemberBinding="{Binding FullName}"
+                                          PlaceholderText="Выберите сотрудника..."
+                                          HorizontalAlignment="Stretch"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Тема" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding Tema}"
+                                         PlaceholderText="Введите тему сообщения..."
+                                         CornerRadius="6"
+                                         Padding="10,8"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Сообщение" FontSize="12" Foreground="#777" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding Text}"
+                                         PlaceholderText="Введите текст сообщения..."
+                                         AcceptsReturn="True"
+                                         MinHeight="160"
+                                         VerticalContentAlignment="Top"
+                                         CornerRadius="6"
+                                         Padding="10,8"/>
+                            </StackPanel>
+
+                            <Button HorizontalAlignment="Right"
+                                    Background="#3498DB"
+                                    Foreground="White"
+                                    FontWeight="Bold"
+                                    CornerRadius="6"
+                                    Padding="24,10"
+                                    Command="{Binding $parent[ScrollViewer].((vm:MessagesPageViewModel)DataContext).SendCommand}">
+                                <TextBlock Text="Отправить"/>
+                            </Button>
+
+                        </StackPanel>
+                    </ScrollViewer>
+
+                </Grid>
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
 </UserControl>

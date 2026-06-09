@@ -30,7 +30,7 @@ public sealed class SAPDbContext(DatabaseSettings databaseSettings) : DbContext
 
 	public DbSet<KlassEntity> Klassy { get; set; }
 
-	public DbSet<RaspisanieEntity> Raspisaniya { get; set; }
+	public DbSet<RaspisanieEntity> Raspisanie { get; set; }
 
 	public DbSet<PrikazEntity> Prikazy { get; set; }
 

@@ -51,6 +51,12 @@ internal class AccountService(IComponentContext componentContext) : IInitializer
 
 	public bool IsLogIn => AccountUser != null;
 
+	internal void Logout()
+	{
+		AccountUser = null;
+		AccountChange?.Invoke(this, EventArgs.Empty);
+	}
+
 	public static Permissions[] AllPermissionsArray => allPermissionsArray;
 
 	public async Task InitializeAsync(CancellationToken cancellationToken = default)
@@ -115,10 +121,17 @@ internal class AccountService(IComponentContext componentContext) : IInitializer
 			.AsNoTracking()
 			.Include(u => u.Role)
 				.ThenInclude(r => r.Permissions)
+			.Include(u => u.Sotrudnik)
 			.FirstAsync(u => u.Login == login && u.PasswordHash == password);
 
-		AccountUser = userEntity
-			.Adapt<UserDto>();
+		AccountUser = userEntity.Adapt<UserDto>();
+
+		if(userEntity.Sotrudnik is { } s)
+		{
+			var parts = new[] { s.Imya, s.Otchestvo }
+				.Where(p => !string.IsNullOrWhiteSpace(p));
+			AccountUser.SotrudnikFIO = string.Join(" ", parts);
+		}
 
 		AccountChange?.Invoke(this, EventArgs.Empty);
 	}

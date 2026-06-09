@@ -28,7 +28,7 @@ public sealed class ZhurnalUspevaemostiRepository(SAPDbContext context) : IZhurn
 	/// </exception>
 	public async Task<ZhurnalUspevaemostiDto> CreateAsync(ZhurnalUspevaemostiDto dto)
 	{
-		var raspisanie = await _context.Raspisaniya
+		var raspisanie = await _context.Raspisanie
 			.Include(r => r.Klass)
 			.Include(r => r.UchebniyPredmet)
 			.FirstOrDefaultAsync(r => r.RaspisanieID == dto.RaspisanieID);
@@ -212,7 +212,7 @@ public sealed class ZhurnalUspevaemostiRepository(SAPDbContext context) : IZhurn
 		if(existing == null)
 			return null;
 
-		var raspisanie = await _context.Raspisaniya
+		var raspisanie = await _context.Raspisanie
 			.FirstOrDefaultAsync(r => r.RaspisanieID == dto.RaspisanieID);
 		if(raspisanie == null)
 			throw new InvalidOperationException($"Расписание с ID {dto.RaspisanieID} не найдено");

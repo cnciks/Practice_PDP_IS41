@@ -1,112 +1,65 @@
-﻿using System;
-using System.Reactive;
-using System.Threading.Tasks;
+using System;
 
 using ReactiveUI;
 
 using SchoolAssistancePlatform.framework.Data;
-using SchoolAssistancePlatform.UI.Services;
 
 namespace SchoolAssistancePlatform.UI.Views.Pages.EmployeesPage;
 
-internal class EmployeeViewModel : ReactiveObject
+internal sealed class EmployeeViewModel : ReactiveObject
 {
-	private readonly EmployeeService _employeeService;
+	public long     SotrudnikID     { get; init; }
+	public string   Familia         { get; init; } = string.Empty;
+	public string   Imya            { get; init; } = string.Empty;
+	public string   Otchestvo       { get; init; } = string.Empty;
+	public DateTime DataRozhdeniya  { get; init; }
+	public string   Dolzhnost       { get; init; } = string.Empty;
+	public string   Email           { get; init; } = string.Empty;
+	public string   Telefon         { get; init; } = string.Empty;
+	public DateTime DataPriema      { get; init; }
+	public string   Status          { get; init; } = string.Empty;
+	public string   ClassLeadership { get; init; } = string.Empty;
+	public string   RoomNumber      { get; init; } = string.Empty;
 
-	private SotrudnikDto _employee;
-	private string _fullName;
-	private string _position;
-	private string _roomNumber;
-	private string _classLeadership;
-	private string _phone;
+	public string FullName => string.IsNullOrWhiteSpace(Otchestvo)
+		? $"{Familia} {Imya}"
+		: $"{Familia} {Imya} {Otchestvo}";
 
-	public long Id => _employee?.SotrudnikID ?? 0;
+	public string Initials => Familia.Length > 0 && Imya.Length > 0
+		? $"{Familia[0]}{Imya[0]}"
+		: "??";
 
-	public string FullName
+	public string AvatarColor => ((Familia.GetHashCode() & 0x7FFFFFFF) % 6) switch
 	{
-		get => _fullName;
-		set => this.RaiseAndSetIfChanged(ref _fullName, value);
-	}
+		0 => "#3498DB",
+		1 => "#9B59B6",
+		2 => "#27AE60",
+		3 => "#E67E22",
+		4 => "#E74C3C",
+		_ => "#16A085",
+	};
 
-	public string Position
+	public string StatusColor => Status switch
 	{
-		get => _position;
-		set => this.RaiseAndSetIfChanged(ref _position, value);
-	}
+		"Активен"  or "Работает"  => "#27AE60",
+		"Отпуск"   or "Больничный" => "#E67E22",
+		"Уволен"                   => "#E74C3C",
+		_                          => "#7F8C8D",
+	};
 
-	public string RoomNumber
+	public static EmployeeViewModel FromDto(SotrudnikDto dto, string classLeadership, string roomNumber) => new()
 	{
-		get => _roomNumber;
-		set => this.RaiseAndSetIfChanged(ref _roomNumber, value);
-	}
-
-	public string ClassLeadership
-	{
-		get => _classLeadership;
-		set => this.RaiseAndSetIfChanged(ref _classLeadership, value);
-	}
-
-	public string Phone
-	{
-		get => _phone;
-		set => this.RaiseAndSetIfChanged(ref _phone, value);
-	}
-
-	public ReactiveCommand<Unit, Unit> EditCommand { get; }
-
-	public EmployeeViewModel(
-		SotrudnikDto employee,
-		string classLeadership,
-		string roomNumber,
-		EmployeeService employeeService)
-	{
-		_employee        = employee;
-		_employeeService = employeeService;
-		_classLeadership = classLeadership;
-		_roomNumber      = roomNumber;
-
-		UpdateProperties();
-
-		EditCommand = ReactiveCommand.CreateFromTask(Edit);
-	}
-
-	private void UpdateProperties()
-	{
-		FullName = string.IsNullOrEmpty(_employee.Otchestvo)
-			? $"{_employee.Familia} {_employee.Imya}"
-			: $"{_employee.Familia} {_employee.Imya} {_employee.Otchestvo}";
-
-		Position = _employee.Dolzhnost ?? "Не указана";
-		Phone = _employee.Telefon ?? "Не указан";
-	}
-
-	private async Task Edit()
-	{
-		try
-		{
-			var updateDto = new SotrudnikDto
-			{
-				Familia        = _employee.Familia,
-				Imya           = _employee.Imya,
-				Otchestvo      = _employee.Otchestvo,
-				DataRozhdeniya = _employee.DataRozhdeniya,
-				Dolzhnost      = _employee.Dolzhnost,
-				Email          = _employee.Email,
-				Telefon        = _employee.Telefon,
-				DataPriema     = _employee.DataPriema,
-				Status         = _employee.Status
-			};
-		}
-		catch(Exception ex)
-		{
-
-		}
-	}
-
-	private async Task<bool> ShowEditDialog(SotrudnikDto dto)
-	{
-		var tcs = new TaskCompletionSource<bool>();
-
-		return await tcs.Task;
-	}
+		SotrudnikID    = dto.SotrudnikID,
+		Familia        = dto.Familia        ?? string.Empty,
+		Imya           = dto.Imya           ?? string.Empty,
+		Otchestvo      = dto.Otchestvo      ?? string.Empty,
+		DataRozhdeniya = dto.DataRozhdeniya,
+		Dolzhnost      = dto.Dolzhnost      ?? string.Empty,
+		Email          = dto.Email          ?? string.Empty,
+		Telefon        = dto.Telefon        ?? string.Empty,
+		DataPriema     = dto.DataPriema,
+		Status         = dto.Status         ?? string.Empty,
+		ClassLeadership = classLeadership,
+		RoomNumber      = roomNumber,
+	};
 }

@@ -1,52 +1,23 @@
-﻿using System;
-using System.Reactive;
-using System.Threading.Tasks;
-
 using ReactiveUI;
 
 using SchoolAssistancePlatform.framework.Data;
 
-using SchoolAssistancePlatform.UI.Services;
-
 namespace SchoolAssistancePlatform.UI.Views.Pages.StudentsPage;
 
-public class StudentViewModel : ReactiveObject
+internal sealed class StudentViewModel : ReactiveObject
 {
-	private readonly StudentService _studentService;
+	private string _averageScore = string.Empty;
 
-	private UchenikDto _student;
-	private string _fullName;
-	private string _class;
-	private string _birthDate;
-	private string _parents;
-	private string _averageScore;
-	private double _averageScoreValue;
+	public long   UchenikID { get; init; }
+	public string Familiia  { get; init; } = string.Empty;
+	public string Imya      { get; init; } = string.Empty;
+	public string Otchestvo { get; init; } = string.Empty;
+	public long   KlassID   { get; init; }
 
-	public long Id => _student?.UchenikID ?? 0;
-
-	public string FullName
-	{
-		get => _fullName;
-		set => this.RaiseAndSetIfChanged(ref _fullName, value);
-	}
-
-	public string Class
-	{
-		get => _class;
-		set => this.RaiseAndSetIfChanged(ref _class, value);
-	}
-
-	public string BirthDate
-	{
-		get => _birthDate;
-		set => this.RaiseAndSetIfChanged(ref _birthDate, value);
-	}
-
-	public string Parents
-	{
-		get => _parents;
-		set => this.RaiseAndSetIfChanged(ref _parents, value);
-	}
+	public string FullName  { get; init; } = string.Empty;
+	public string Class     { get; init; } = string.Empty;
+	public string BirthDate { get; init; } = string.Empty;
+	public string Parents   { get; init; } = string.Empty;
 
 	public string AverageScore
 	{
@@ -54,60 +25,50 @@ public class StudentViewModel : ReactiveObject
 		set => this.RaiseAndSetIfChanged(ref _averageScore, value);
 	}
 
-	public ReactiveCommand<Unit, Unit> EditCommand { get; }
+	public string Initials => Familiia.Length > 0 && Imya.Length > 0
+		? $"{Familiia[0]}{Imya[0]}"
+		: "??";
 
-	public StudentViewModel(
-		UchenikDto student,
-		double averageScore,
+	public string AvatarColor => ((Familiia.GetHashCode() & 0x7FFFFFFF) % 6) switch
+	{
+		0 => "#3498DB",
+		1 => "#9B59B6",
+		2 => "#27AE60",
+		3 => "#E67E22",
+		4 => "#E74C3C",
+		_ => "#16A085",
+	};
+
+	public string ScoreBadgeColor => double.TryParse(
+		AverageScore.Replace(',', '.'),
+		System.Globalization.NumberStyles.Any,
+		System.Globalization.CultureInfo.InvariantCulture, out var v)
+		? v switch
+		{
+			>= 4.5 => "#27AE60",
+			>= 3.5 => "#3498DB",
+			>= 2.5 => "#E67E22",
+			> 0    => "#E74C3C",
+			_      => "#95A5A6",
+		}
+		: "#95A5A6";
+
+	public static StudentViewModel FromDto(
+		UchenikDto dto,
+		double avgScore,
 		string fullName,
 		string className,
-		string parents,
-		StudentService studentService)
+		string parents) => new()
 	{
-		_student = student;
-		_studentService = studentService;
-		_averageScoreValue = averageScore;
-
-		UpdateProperties(fullName, className, parents);
-
-		EditCommand = ReactiveCommand.CreateFromTask(Edit);
-	}
-
-	private void UpdateProperties(string fullName, string className, string parents)
-	{
-		FullName = fullName;
-		Class = className;
-		BirthDate = _student.DataRozhdeniya.ToString("dd.MM.yyyy");
-		Parents = parents;
-		AverageScore = _averageScoreValue > 0 ? _averageScoreValue.ToString("F2") : "Нет оценок";
-	}
-
-	private async Task UpdateAverageScore()
-	{
-		_averageScoreValue = await _studentService.GetAverageScoreAsync(Id);
-		AverageScore = _averageScoreValue > 0 ? _averageScoreValue.ToString("F2") : "Нет оценок";
-	}
-
-	private async Task Edit()
-	{
-		try
-		{
-			var updateDto = new UchenikDto
-			{
-				Familiia          = _student.Familiia,
-				Imya              = _student.Imya,
-				Otchestvo         = _student.Otchestvo,
-				DataRozhdeniya    = _student.DataRozhdeniya,
-				AdresProzhivaniya = _student.AdresProzhivaniya,
-				FIORoditeley      = _student.FIORoditeley,
-				TelefonRoditelya  = _student.TelefonRoditelya,
-				DataZachisleniya  = _student.DataZachisleniya,
-				KlassID           = _student.KlassID
-			};
-		}
-		catch(Exception ex)
-		{
-
-		}
-	}
+		UchenikID    = dto.UchenikID,
+		Familiia     = dto.Familiia     ?? string.Empty,
+		Imya         = dto.Imya         ?? string.Empty,
+		Otchestvo    = dto.Otchestvo    ?? string.Empty,
+		KlassID      = dto.KlassID,
+		FullName     = fullName,
+		Class        = className,
+		BirthDate    = dto.DataRozhdeniya.ToString("dd.MM.yyyy"),
+		Parents      = parents,
+		AverageScore = avgScore > 0 ? avgScore.ToString("F2") : "—",
+	};
 }

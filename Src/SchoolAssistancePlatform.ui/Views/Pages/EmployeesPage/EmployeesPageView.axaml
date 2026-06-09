@@ -1,171 +1,263 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:SchoolAssistancePlatform.UI.Views.Pages.EmployeesPage"
+             mc:Ignorable="d"
+             x:Class="SchoolAssistancePlatform.UI.Views.Pages.EmployeesPage.EmployeesPageView"
+             x:DataType="vm:EmployeesPageViewModel">
 
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    <Grid ColumnDefinitions="*, Auto" Margin="20">
 
-			 x:Class="SchoolAssistancePlatform.UI.EmployeesPageView">
-	<Grid RowDefinitions="Auto, *"
-		  Margin="20">
+        <Grid Grid.Column="0" RowDefinitions="Auto, Auto, *" Margin="0,0,8,0">
 
-		<Grid ColumnDefinitions="*, Auto"
-			  Margin="0 0 0 20">
-
-			<Border BorderThickness="1"
-					BorderBrush="#CCCCCC"
-					Margin="0 0 20 0"
-					CornerRadius="3">
-                <Grid VerticalAlignment="Center"
-                      ColumnDefinitions="*, Auto">                    
-				    <StackPanel VerticalAlignment="Center"
-				    			Orientation="Horizontal"
-				    			Margin="20 0">
-				    	<ComboBox PlaceholderText="Должность"
-				    			  Width="180"
-				    			  Margin="0 0 20 0"/>
-				    	<ComboBox PlaceholderText="Кабинет"
-				    			  Width="180"/>
-				    </StackPanel>
-
-                    
-				    <ToggleButton x:Name="notification"
-				    			  Background="Transparent"
-                                  IsChecked="{Binding ApplyFilter}"
-				    			  Grid.Column="1">
-				    	<Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/filter.png"
-				    		Width="32" Height="32"
-				    		Margin="10"/>
-				    </ToggleButton>
-
-                </Grid>
-			</Border>
-
-			<Button HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"
-					Background="Transparent"
-					BorderThickness="1"
-					BorderBrush="#CCCCCC"
-					Grid.Column="1"
-					Command="{Binding AddEmployeesCommand}">
-			
-				<Grid ColumnDefinitions="Auto, *"
-					  HorizontalAlignment="Stretch"
-					  Margin="10 0">
-			
-					 <Image Source="avares://SchoolAssistancePlatform.ui/Assets/Images/add-user.png"
-							Width="32" Height="32"
-							HorizontalAlignment="Center"
-							Margin="10"/>
-			
-					<TextBlock Text="Добавить"
-							   FontWeight="Bold"
-							   Grid.Column="1"
-							   VerticalAlignment="Center"/>
-				</Grid>
-			
-			</Button>
-		</Grid>
-
-        <ScrollViewer Margin="15"
-                      Grid.Row="1">
-
-            <Grid Grid.Row="1" RowDefinitions="Auto, *" Margin="0,10,0,0">
-    
-                <Border Grid.Row="0" 
-                        Background="#2C3E50" 
-                        CornerRadius="8,8,0,0" 
-                        Padding="12,10" 
-                        Margin="0,0,0,2">
-                    <Grid ColumnDefinitions="1.5*, 1.2*, 0.8*, 1.2*, 1*, 0.8*">
-                        <TextBlock Grid.Column="0" Text="👤 ФИО" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
-                        <TextBlock Grid.Column="1" Text="💼 Должность" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
-                        <TextBlock Grid.Column="2" Text="🚪 Кабинет" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
-                        <TextBlock Grid.Column="3" Text="🏫 Классное руководство" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
-                        <TextBlock Grid.Column="4" Text="📞 Телефон" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
-                        <TextBlock Grid.Column="5" Text="⚙️ Действия" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" FontSize="13"/>
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,12">
+                <Border Grid.Column="0" BorderThickness="1" BorderBrush="#DDDDDD"
+                        CornerRadius="8" Background="White" Margin="0,0,10,0">
+                    <Grid ColumnDefinitions="Auto, *" Margin="10,0">
+                        <TextBlock Text="🔍" VerticalAlignment="Center" Margin="0,0,6,0"
+                                   Foreground="#AAA" FontSize="14"/>
+                        <TextBox Grid.Column="1" Text="{Binding SearchText}"
+                                 PlaceholderText="Поиск по ФИО, должности, телефону..."
+                                 Background="Transparent" BorderThickness="0"
+                                 VerticalContentAlignment="Center"
+                                 Padding="10 0"
+                                 FontSize="13"/>
                     </Grid>
                 </Border>
-                
-                <ItemsControl Grid.Row="1" 
-                         ItemsSource="{Binding Employees}"
-                         BorderThickness="1"
-                         ScrollViewer.VerticalScrollBarVisibility="Visible"
-                         BorderBrush="#E0E0E0"
-                         Background="#FAFAFA">
-                    
+                <Button Grid.Column="1" Command="{Binding AddCommand}"
+                        Background="#3498DB" Foreground="White"
+                        BorderThickness="0" CornerRadius="8" Padding="16,9">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="+" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="Добавить" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Заголовок таблицы -->
+            <Border Grid.Row="1" Background="#2C3E50" CornerRadius="8,8,0,0" Padding="12,10">
+                <Grid ColumnDefinitions="48, 2*, 1.4*, 0.8*, 1.2*, 1*, 60, 60">
+                    <TextBlock Grid.Column="1" Text="ФИО" FontWeight="Bold" Foreground="White"
+                               FontSize="12" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Text="Должность" FontWeight="Bold" Foreground="White"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="3" Text="Каб." FontWeight="Bold" Foreground="White"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="4" Text="Кл. руководство" FontWeight="Bold" Foreground="White"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="5" Text="Телефон" FontWeight="Bold" Foreground="White"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Строки таблицы -->
+            <ScrollViewer Grid.Row="2">
+                <ItemsControl ItemsSource="{Binding Employees}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="#E0E0E0" 
-                                    BorderThickness="0,0,0,1" 
-                                    Background="White"
-                                    Padding="12,10">
-                                <Grid ColumnDefinitions="1.5*, 1.2*, 0.8*, 1.2*, 1*, 0.8*">
-                                    
-                                    <TextBlock Grid.Column="0" 
-                                               Text="{Binding FullName}" 
-                                               HorizontalAlignment="Center"
-                                               FontWeight="SemiBold"
-                                               Foreground="#2C3E50"/>
-                                    
-                                    <Border Grid.Column="1" 
-                                            Background="#FFF3E0" 
-                                            CornerRadius="10" 
-                                            Padding="8,3"
-                                            HorizontalAlignment="Center">
-                                        <TextBlock Text="{Binding Position}" 
-                                                   Foreground="#E67E22"
-                                                   FontWeight="SemiBold"
-                                                   FontSize="12"/>
+                        <DataTemplate x:DataType="vm:EmployeeViewModel">
+                            <Border BorderBrush="#EEEEEE" BorderThickness="0,0,0,1"
+                                    Background="White" Padding="12,8">
+                                <Grid ColumnDefinitions="48, 2*, 1.4*, 0.8*, 1.2*, 1*, 60, 60">
+
+                                    <!-- Аватар -->
+                                    <Border Grid.Column="0" Width="36" Height="36" CornerRadius="18"
+                                            Background="{Binding AvatarColor}" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Initials}" FontSize="12"
+                                                   FontWeight="Bold" Foreground="White"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
-                                    
-                                    <Border Grid.Column="2" 
-                                            Background="#E8F8F5" 
-                                            CornerRadius="10" 
-                                            Padding="8,3"
-                                            HorizontalAlignment="Center">
-                                        <TextBlock Text="{Binding RoomNumber}" 
-                                                   Foreground="#1ABC9C"
-                                                   FontWeight="SemiBold"
-                                                   FontSize="12"/>
+
+                                    <!-- ФИО + статус -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock Text="{Binding FullName}" FontWeight="SemiBold"
+                                                   FontSize="13" Foreground="#2C3E50"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <Border Width="7" Height="7" CornerRadius="4"
+                                                    Background="{Binding StatusColor}"
+                                                    VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Status}" FontSize="11" Foreground="#888"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <!-- Должность -->
+                                    <Border Grid.Column="2" Background="#FFF3E0" CornerRadius="10"
+                                            Padding="8,3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Dolzhnost}" Foreground="#E67E22"
+                                                   FontWeight="SemiBold" FontSize="11"/>
                                     </Border>
-                                    
-                                    <Border Grid.Column="3" 
-                                            Background="#F4ECF7" 
-                                            CornerRadius="10" 
-                                            Padding="8,3"
-                                            HorizontalAlignment="Center">
-                                        <TextBlock Text="{Binding ClassLeadership}" 
-                                                   Foreground="#8E44AD"
-                                                   FontWeight="SemiBold"
-                                                   FontSize="12"/>
+
+                                    <!-- Кабинет -->
+                                    <Border Grid.Column="3" Background="#E8F8F5" CornerRadius="10"
+                                            Padding="8,3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding RoomNumber}" Foreground="#1ABC9C"
+                                                   FontWeight="SemiBold" FontSize="11"/>
                                     </Border>
-                                    
-                                    <TextBlock Grid.Column="4" 
-                                               Text="{Binding Phone}" 
-                                               HorizontalAlignment="Center"
-                                               Foreground="#34495E"/>
-                                    
-                                    <Button Grid.Column="5" 
-                                            Content="✏️ Редактировать"
-                                            Command="{Binding EditCommand}"
-                                            HorizontalAlignment="Center"
-                                            Background="#3498DB"
-                                            Foreground="White"
-                                            BorderThickness="0"
-                                            Padding="12,5"
-                                            FontSize="12"
-                                            FontWeight="SemiBold"
-                                            Cursor="Hand"
-                                            CornerRadius="6"/>
-                                    
+
+                                    <!-- Классное руководство -->
+                                    <Border Grid.Column="4" Background="#F4ECF7" CornerRadius="10"
+                                            Padding="8,3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding ClassLeadership}" Foreground="#8E44AD"
+                                                   FontWeight="SemiBold" FontSize="11"/>
+                                    </Border>
+
+                                    <!-- Телефон -->
+                                    <TextBlock Grid.Column="5" Text="{Binding Telefon}"
+                                               FontSize="12" Foreground="#555"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                    <!-- Редактировать -->
+                                    <Button Grid.Column="6"
+                                            Command="{Binding $parent[ItemsControl].((vm:EmployeesPageViewModel)DataContext).EditCommand}"
+                                            CommandParameter="{Binding}"
+                                            Background="Transparent" BorderThickness="1" BorderBrush="#3498DB"
+                                            CornerRadius="6" Padding="6,4" HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" ToolTip.Tip="Редактировать">
+                                        <TextBlock Text="✏" FontSize="13" Foreground="#3498DB"/>
+                                    </Button>
+
+                                    <!-- Удалить -->
+                                    <Button Grid.Column="7"
+                                            Command="{Binding $parent[ItemsControl].((vm:EmployeesPageViewModel)DataContext).DeleteCommand}"
+                                            CommandParameter="{Binding}"
+                                            Background="Transparent" BorderThickness="1" BorderBrush="#E74C3C"
+                                            CornerRadius="6" Padding="6,4" HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" ToolTip.Tip="Удалить">
+                                        <TextBlock Text="🗑" FontSize="13" Foreground="#E74C3C"/>
+                                    </Button>
+
                                 </Grid>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-    
-            </Grid>
-        </ScrollViewer>
-	</Grid>
+            </ScrollViewer>
+
+        </Grid>
+
+        <!-- Боковая панель формы -->
+        <Border Grid.Column="1"
+                IsVisible="{Binding IsFormVisible}"
+                Width="320"
+                Background="White"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1"
+                CornerRadius="10"
+                Margin="0,0,0,0">
+            <ScrollViewer>
+            <StackPanel Spacing="0">
+
+                <!-- Заголовок панели -->
+                <Border Background="#F8F9FA" BorderBrush="#EEEEEE" BorderThickness="0,0,0,1"
+                        CornerRadius="10,10,0,0" Padding="16,14">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <TextBlock Text="{Binding FormTitle}" FontWeight="Bold"
+                                   FontSize="15" Foreground="#2C3E50" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Command="{Binding CancelCommand}"
+                                Background="Transparent" BorderThickness="0"
+                                Padding="4" VerticalAlignment="Center">
+                            <TextBlock Text="✕" FontSize="14" Foreground="#888"/>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Поля формы -->
+                <StackPanel Spacing="12" Margin="16">
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Фамилия *" FontSize="12" Foreground="#666" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Form.Familia}" PlaceholderText="Введите фамилию"
+                                 Padding="10,8" FontSize="13"
+                                 BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Имя *" FontSize="12" Foreground="#666" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Form.Imya}" PlaceholderText="Введите имя"
+                                 Padding="10,8" FontSize="13"
+                                 BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Отчество" FontSize="12" Foreground="#666" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Form.Otchestvo}" PlaceholderText="Введите отчество"
+                                 Padding="10,8" FontSize="13"
+                                 BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Дата рождения" FontSize="12" Foreground="#666" FontWeight="SemiBold"/>
+                        <DatePicker SelectedDate="{Binding Form.DataRozhdeniya}"
+                                    HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Должность *" FontSize="12" Foreground="#666" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Form.Dolzhnost}" PlaceholderText="Введите должность"
+                                 Padding="10,8" FontSize="13"
+                                 BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Email" FontSize="12" Foreground="#666" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Form.Email}" PlaceholderText="email@school.ru"
+                                 Padding="10,8" FontSize="13"
+                                 BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Телефон" FontSize="12" Foreground="#666" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Form.Telefon}" PlaceholderText="+7 (___) ___-__-__"
+                                 Padding="10,8" FontSize="13"
+                                 BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Дата приёма" FontSize="12" Foreground="#666" FontWeight="SemiBold"/>
+                        <DatePicker SelectedDate="{Binding Form.DataPriema}"
+                                    HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Статус" FontSize="12" Foreground="#666" FontWeight="SemiBold"/>
+                        <ComboBox SelectedItem="{Binding Form.Status}"
+                                  HorizontalAlignment="Stretch" Padding="10,8" FontSize="13">
+                            <ComboBoxItem Content="Активен"/>
+                            <ComboBoxItem Content="Отпуск"/>
+                            <ComboBoxItem Content="Больничный"/>
+                            <ComboBoxItem Content="Уволен"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Ошибка -->
+                    <Border Background="#FDEDEC" CornerRadius="6" Padding="10,8"
+                            IsVisible="{Binding FormError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <TextBlock Text="{Binding FormError}" Foreground="#E74C3C"
+                                   FontSize="12" TextWrapping="Wrap"/>
+                    </Border>
+
+                    <!-- Кнопки -->
+                    <Grid ColumnDefinitions="*, *" Margin="0,4,0,8">
+                        <Button Grid.Column="0" Command="{Binding CancelCommand}"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                Background="Transparent" BorderThickness="1" BorderBrush="#CCCCCC"
+                                CornerRadius="6" Padding="0,9" Margin="0,0,4,0">
+                            <TextBlock Text="Отмена" FontSize="13" Foreground="#666"/>
+                        </Button>
+                        <Button Grid.Column="1" Command="{Binding SaveCommand}"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                Background="#3498DB" BorderThickness="0"
+                                CornerRadius="6" Padding="0,9" Margin="4,0,0,0">
+                            <TextBlock Text="Сохранить" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                        </Button>
+                    </Grid>
+
+                </StackPanel>
+
+            </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+    </Grid>
+
 </UserControl>

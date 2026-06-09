@@ -6,6 +6,7 @@ namespace SchoolAssistancePlatform.Base.Entity.School;
 /// <summary>
 /// Представляет расписание занятий (уроков) для класса
 /// </summary>
+[Table("Raspisanie", Schema = "School")]
 public class RaspisanieEntity
 {
 	/// <summary>
@@ -38,7 +39,7 @@ public class RaspisanieEntity
 	[ForeignKey("PredmetID")]
 	public virtual UchebniyPredmetEntity UchebniyPredmet { get; set; }
 
-	/// <summary>ы
+	/// <summary>
 	/// Внешний ключ, ссылка на преподавателя
 	/// </summary>
 	[Required(ErrorMessage = "Преподаватель обязателен")]

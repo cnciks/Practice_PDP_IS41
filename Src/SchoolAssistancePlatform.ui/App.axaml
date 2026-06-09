@@ -8,6 +8,7 @@
 
         <Style Selector="TextBlock">
             <Setter Property="FontFamily" Value="Roboto" />
+            <Setter Property="TextWrapping" Value="Wrap" />
 		</Style>
         <Style Selector="Button">
 		    <Setter Property="FontFamily" Value="Roboto" />
